@@ -43,9 +43,18 @@ protected:
     void openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor);
 
 private:
+    static constexpr int designWidth = 1315;
+    static constexpr int designHeight = 700;
+    
+    void layoutContent();
+    
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     ScaleSpaceAudioProcessor& audioProcessor;
+    
+    // All UI lives inside this fixed-size component. Its transform is updated
+    // on resize so that the whole interface scales while keeping its aspect ratio.
+    juce::Component contentComponent;
     
     std::unique_ptr<TuningEditor> tuningEditor;
     juce::Component::SafePointer<ExternalTuningEditorWindow> editorWindow;

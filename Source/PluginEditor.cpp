@@ -15,7 +15,11 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (1315, 700);
+    setSize (designWidth, designHeight);
+    
+    // The whole UI is placed inside contentComponent, which is always laid out
+    // at the design size and then scaled to fit the editor window.
+    addAndMakeVisible (contentComponent);
     
     // Slider attachments
     xAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.getApvts(), "x", multiPad.xSlider);
@@ -25,19 +29,19 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     smoothToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (audioProcessor.getApvts(), "smooth", smoothToggle);
     dimensionModeButtonAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (audioProcessor.getApvts(), "threeDimensional", dimensionModeButton);
     
-    addAndMakeVisible(&multiPad);
+    contentComponent.addAndMakeVisible(&multiPad);
 
     juce::Colour mainUITextColor = juce::Colours::black;
     juce::Colour buttonOnColor = juce::Colour::fromRGB(0xF7, 0xC4, 0x6C);
     
-    addAndMakeVisible (&pluginTitleLabel);
+    contentComponent.addAndMakeVisible (&pluginTitleLabel);
     pluginTitleLabel.setFont (juce::FontOptions(brunoAceSC).withHeight(42));
     pluginTitleLabel.setText ("ScaleSpace", juce::dontSendNotification);
     pluginTitleLabel.setColour (juce::Label::textColourId, mainUITextColor);
     pluginTitleLabel.setMinimumHorizontalScale(1.0f);
     
     // Scale Box 1
-    addAndMakeVisible (&scaleBox1);
+    contentComponent.addAndMakeVisible (&scaleBox1);
     scaleBox1.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
     scaleBox1.scaleLabel.setText ("SCALE 1", juce::dontSendNotification);
     scaleBox1.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_1, SCL, "Open SCL File for Scale 1", "*.scl"); };
@@ -45,7 +49,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox1.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_1); };
 
     // Scale Box 2
-    addAndMakeVisible (&scaleBox2);
+    contentComponent.addAndMakeVisible (&scaleBox2);
     scaleBox2.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
     scaleBox2.scaleLabel.setText ("SCALE 2", juce::dontSendNotification);
     scaleBox2.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_2, SCL, "Open SCL File for Scale 2", "*.scl"); };
@@ -53,7 +57,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox2.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_2); };
     
     // Scale Box 3
-    addAndMakeVisible (&scaleBox3);
+    contentComponent.addAndMakeVisible (&scaleBox3);
     scaleBox3.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
     scaleBox3.scaleLabel.setText ("SCALE 3", juce::dontSendNotification);
     scaleBox3.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_3, SCL, "Open SCL File for Scale 3", "*.scl"); };
@@ -61,7 +65,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox3.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_3); };
     
     // Scale Box 4
-    addAndMakeVisible (&scaleBox4);
+    contentComponent.addAndMakeVisible (&scaleBox4);
     scaleBox4.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
     scaleBox4.scaleLabel.setText ("SCALE 4", juce::dontSendNotification);
     scaleBox4.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_4, SCL, "Open SCL File for Scale 4", "*.scl"); };
@@ -69,7 +73,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox4.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_4); };
     
     // Scale Box 5
-    addAndMakeVisible (&scaleBox5);
+    contentComponent.addAndMakeVisible (&scaleBox5);
     scaleBox5.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
     scaleBox5.scaleLabel.setText ("SCALE 5", juce::dontSendNotification);
     scaleBox5.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_5, SCL, "Open SCL File for Scale 5", "*.scl"); };
@@ -77,7 +81,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox5.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_5); };
     
     // Scale Box 6
-    addAndMakeVisible (&scaleBox6);
+    contentComponent.addAndMakeVisible (&scaleBox6);
     scaleBox6.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
     scaleBox6.scaleLabel.setText ("SCALE 6", juce::dontSendNotification);
     scaleBox6.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_6, SCL, "Open SCL File for Scale 6", "*.scl"); };
@@ -85,7 +89,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox6.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_6); };
     
     // Scale Box 7
-    addAndMakeVisible (&scaleBox7);
+    contentComponent.addAndMakeVisible (&scaleBox7);
     scaleBox7.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
     scaleBox7.scaleLabel.setText ("SCALE 7", juce::dontSendNotification);
     scaleBox7.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_7, SCL, "Open SCL File for Scale 7", "*.scl"); };
@@ -93,7 +97,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox7.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_7); };
     
     // Scale Box 8
-    addAndMakeVisible (&scaleBox8);
+    contentComponent.addAndMakeVisible (&scaleBox8);
     scaleBox8.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
     scaleBox8.scaleLabel.setText ("SCALE 8", juce::dontSendNotification);
     scaleBox8.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_8, SCL, "Open SCL File for Scale 8", "*.scl"); };
@@ -101,25 +105,25 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox8.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_8); };
     
     // Export buttons
-    addAndMakeVisible(&exportSclButton);
+    contentComponent.addAndMakeVisible(&exportSclButton);
     exportSclButton.setColour (juce::TextButton::buttonColourId, buttonOnColor);
     exportSclButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
     exportSclButton.setButtonText ("Export SCL");
     exportSclButton.onClick = [this] { exportButtonClicked(SCL, "Save SCL File for current tuning", "*.scl"); };
     
-    addAndMakeVisible(&exportKbmButton);
+    contentComponent.addAndMakeVisible(&exportKbmButton);
     exportKbmButton.setColour (juce::TextButton::buttonColourId, buttonOnColor);
     exportKbmButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
     exportKbmButton.setButtonText ("Export KBM");
     exportKbmButton.onClick = [this] { exportButtonClicked(KBM, "Save KBM File for current tuning", "*.kbm"); };
     
-    addAndMakeVisible(&smoothToggle);
+    contentComponent.addAndMakeVisible(&smoothToggle);
     smoothToggle.setColour (juce::ToggleButton::textColourId, juce::Colours::black);
     smoothToggle.setColour (juce::ToggleButton::tickColourId, juce::Colours::black);
     smoothToggle.setColour (juce::ToggleButton::tickDisabledColourId, juce::Colours::grey);
     smoothToggle.setButtonText ("Smooth");
     
-    addAndMakeVisible (&smoothAmtSlider);
+    contentComponent.addAndMakeVisible (&smoothAmtSlider);
     smoothAmtSlider.setColour(juce::Slider::thumbColourId , juce::Colour::fromRGB(0x00, 0x54, 0xC2));
     smoothAmtSlider.setColour(juce::Slider::trackColourId, buttonOnColor);
     smoothAmtSlider.setColour(juce::Slider::backgroundColourId, buttonOnColor);
@@ -128,7 +132,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     smoothAmtSlider.setColour(juce::Slider::textBoxOutlineColourId, mainUITextColor);
     smoothAmtSlider.setRange (1.0f, 10.0f);
     
-    addAndMakeVisible (&dimensionModeButton);
+    contentComponent.addAndMakeVisible (&dimensionModeButton);
     dimensionModeButton.setColour (juce::TextButton::buttonColourId, juce::Colour::fromRGB(0xFA, 0xFA, 0xFA));
     dimensionModeButton.setColour (juce::TextButton::buttonOnColourId, buttonOnColor);
     dimensionModeButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
@@ -151,6 +155,13 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     tuningEditor = std::make_unique<TuningEditor>(audioProcessor, TUNING_1);
     
+    // Allow the host and the user to resize the editor. The bottom-right corner
+    // resizer is added by JUCE, and the fixed aspect ratio keeps the UI proportional.
+    setResizeLimits (designWidth / 2, designHeight / 2, designWidth * 3, designHeight * 3);
+    if (auto* constrainer = getConstrainer())
+        constrainer->setFixedAspectRatio ((double) designWidth / (double) designHeight);
+    setResizable (true, true);
+    
     initialUIUpdate = true;
     startTimerHz(10);
 }
@@ -169,7 +180,24 @@ void ScaleSpaceAudioProcessorEditor::paint (juce::Graphics& g)
 
 void ScaleSpaceAudioProcessorEditor::resized()
 {
-    pluginTitleLabel.setBounds (20, 20, getWidth() - 20, 30);
+    // Scale the fixed-size interface to fill the editor while preserving its aspect ratio.
+    const float scale = juce::jmin ((float) getWidth()  / (float) designWidth,
+                                    (float) getHeight() / (float) designHeight);
+    
+    const int scaledWidth  = juce::roundToInt (designWidth  * scale);
+    const int scaledHeight = juce::roundToInt (designHeight * scale);
+    
+    contentComponent.setTransform (juce::AffineTransform::scale (scale));
+    contentComponent.setBounds ((getWidth()  - scaledWidth)  / 2,
+                                (getHeight() - scaledHeight) / 2,
+                                designWidth, designHeight);
+    
+    layoutContent();
+}
+
+void ScaleSpaceAudioProcessorEditor::layoutContent()
+{
+    pluginTitleLabel.setBounds (20, 20, designWidth - 20, 30);
     
     if (!*audioProcessor.getApvts().getRawParameterValue("threeDimensional"))
     {
@@ -224,17 +252,17 @@ void ScaleSpaceAudioProcessorEditor::resized()
         
     }
     
-    smoothToggle.setBounds (getWidth() * 0.390f, 590, 80, 30);
-    smoothAmtSlider.setBounds (getWidth() * 0.442, 590, 215, 30);
+    smoothToggle.setBounds (designWidth * 0.390f, 590, 80, 30);
+    smoothAmtSlider.setBounds (designWidth * 0.442, 590, 215, 30);
     
-    exportSclButton.setBounds (getWidth() * 0.415f, 650, 100, 30);
-    exportKbmButton.setBounds (getWidth() * 0.505f, 650, 100, 30);
+    exportSclButton.setBounds (designWidth * 0.415f, 650, 100, 30);
+    exportKbmButton.setBounds (designWidth * 0.505f, 650, 100, 30);
     
-    multiPadSize = getHeight() / 1.55f;
+    multiPadSize = designHeight / 1.55f;
     
     dimensionModeButton.setBounds (295, 15, 60, 45);
     
-    float xOrigin = (getWidth() - multiPadSize) / 2.0f;
+    float xOrigin = (designWidth - multiPadSize) / 2.0f;
     float yOrigin = 100.0f;
     multiPad.setBounds(xOrigin, yOrigin, multiPadSize, multiPadSize);
   
@@ -365,6 +393,12 @@ void ScaleSpaceAudioProcessorEditor::filesDropped (const juce::StringArray &file
 {
     if (files.size() !=1)
         return;
+    
+    // Convert from editor coordinates into the scaled content component's
+    // coordinate space so the scale box hit-testing below still works.
+    const auto contentPoint = contentComponent.getLocalPoint (this, juce::Point<int> (x, y));
+    x = contentPoint.x;
+    y = contentPoint.y;
         
     for (auto i = files.begin(); i != files.end(); ++i)
     {
