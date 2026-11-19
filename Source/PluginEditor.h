@@ -13,6 +13,7 @@
 #include "TuningEditor.h"
 #include "ScaleBox.h"
 #include "MultiDimensionalPad.h"
+#include "Theme.h"
 //==============================================================================
 /**
 */
@@ -41,8 +42,15 @@ protected:
     void openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor);
 
 private:
-    static constexpr int designWidth = 1315;
-    static constexpr int designHeight = 700;
+    static constexpr int scaleBoxWidth   = 300;
+    static constexpr int scaleBoxHeight  = 170;
+    static constexpr int padSize         = 451;
+    static constexpr int statusBarHeight = 30;
+    
+    // The design size wraps tightly around the four scale boxes, the XY pad
+    // and a single status-bar row, with a uniform gap between everything.
+    static constexpr int designWidth  = ScaleSpaceLayout::gap * 4 + scaleBoxWidth * 2 + padSize;
+    static constexpr int designHeight = ScaleSpaceLayout::gap * 3 + padSize + statusBarHeight;
     static constexpr int minWidth = designWidth / 2;
     static constexpr int minHeight = designHeight / 2;
     static constexpr int maxWidth = designWidth * 3;
@@ -64,9 +72,6 @@ private:
     juce::Component::SafePointer<ExternalTuningEditorWindow> editorWindow;
     
     MultiDimensionalPad multiPad;
-    float multiPadSize;
-    
-    juce::Label pluginTitleLabel;
     
     ScaleBox scaleBox1;
     ScaleBox scaleBox2;
@@ -85,7 +90,6 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> smoothToggleAttachment;
     
     juce::Typeface::Ptr brunoAce = juce::Typeface::createSystemTypefaceFor(BinaryData::BrunoAceRegular_ttf, BinaryData::BrunoAceRegular_ttfSize);
-    juce::Typeface::Ptr brunoAceSC = juce::Typeface::createSystemTypefaceFor(BinaryData::BrunoAceSCRegular_ttf, BinaryData::BrunoAceSCRegular_ttfSize);
     
     std::unique_ptr<juce::FileChooser> chooser;
     

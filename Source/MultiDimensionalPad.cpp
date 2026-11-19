@@ -113,5 +113,9 @@ void MultiDimensionalPad::sliderValueChanged(Slider* slider)
 
 void MultiDimensionalPad::resized()
 {
-    xyPad.setBounds(2, 2, getWidth() - 4, getHeight() - 4);
+    // The outline is centred on the pad edge, so inset by half the stroke
+    // width to keep the visible edge flush with the component bounds. This
+    // makes the layout gaps around the pad match their configured values.
+    constexpr float strokeWidth = 2.0f;
+    xyPad = getLocalBounds().toFloat().reduced(strokeWidth * 0.5f);
 }

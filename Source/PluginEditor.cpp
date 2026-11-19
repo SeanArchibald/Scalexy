@@ -10,6 +10,8 @@
 #include "PluginEditor.h"
 #include "Theme.h"
 
+#include <cmath>
+
 //==============================================================================
 static juce::PropertiesFile::Options createSettingsOptions()
 {
@@ -35,6 +37,16 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     restoredWidth  = juce::jlimit (minWidth,  maxWidth,  restoredWidth);
     restoredHeight = juce::jlimit (minHeight, maxHeight, restoredHeight);
     
+    // If the stored size has a different aspect ratio it was saved by an older
+    // layout, so fall back to the current design size instead of letterboxing.
+    const double designAspect   = (double) designWidth  / (double) designHeight;
+    const double restoredAspect = (double) restoredWidth / (double) restoredHeight;
+    if (std::abs (restoredAspect - designAspect) > 0.01)
+    {
+        restoredWidth  = designWidth;
+        restoredHeight = designHeight;
+    }
+    
     // Restore the window size the user last chose (or use the design size).
     setSize (restoredWidth, restoredHeight);
     
@@ -52,12 +64,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
 
     const auto mainUITextColor = ScaleSpaceColours::foreground;
     const auto controlFillColor = ScaleSpaceColours::controlFill;
-    
-    contentComponent.addAndMakeVisible (&pluginTitleLabel);
-    pluginTitleLabel.setFont (juce::FontOptions(brunoAceSC).withHeight(42));
-    pluginTitleLabel.setText ("ScaleSpace", juce::dontSendNotification);
-    pluginTitleLabel.setColour (juce::Label::textColourId, mainUITextColor);
-    pluginTitleLabel.setMinimumHorizontalScale(1.0f);
     
     // Scale Box 1
     contentComponent.addAndMakeVisible (&scaleBox1);
@@ -175,29 +181,32 @@ void ScaleSpaceAudioProcessorEditor::resized()
 
 void ScaleSpaceAudioProcessorEditor::layoutContent()
 {
-    pluginTitleLabel.setBounds (20, 20, designWidth - 20, 30);
+    constexpr int gap = ScaleSpaceLayout::gap;
+    constexpr int padX = gap + scaleBoxWidth + gap;
+    constexpr int rightColumnX = padX + padSize + gap;
     
-    uint32_t scaleBoxOriginX = 65;
-    uint32_t scaleBoxOriginY = 80;
-    uint32_t scaleBoxXOffset = 880;
-    uint32_t scaleBoxYOffset = 310;
-    scaleBox1.setBounds (scaleBoxOriginX, scaleBoxOriginY, 300, 170);
-    scaleBox2.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY, 300, 170);
-    scaleBox3.setBounds (scaleBoxOriginX, scaleBoxOriginY + scaleBoxYOffset, 300, 170);
-    scaleBox4.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY + scaleBoxYOffset, 300, 170);
+    // Scale 1 sits in the top-left corner and Scale 2 mirrors it on the
+    // top-right, on the other side of the XY pad.
+    scaleBox1.setBounds (gap, gap, scaleBoxWidth, scaleBoxHeight);
+    scaleBox2.setBounds (rightColumnX, gap, scaleBoxWidth, scaleBoxHeight);
     
-    smoothToggle.setBounds (designWidth * 0.390f, 590, 80, 30);
-    smoothAmtSlider.setBounds (designWidth * 0.442, 590, 215, 30);
+    // The XY pad sits between the top pair of scale boxes.
+    multiPad.setBounds (padX, gap, padSize, padSize);
     
-    exportSclButton.setBounds (designWidth * 0.415f, 650, 100, 30);
-    exportKbmButton.setBounds (designWidth * 0.505f, 650, 100, 30);
+    // Scale 3 and Scale 4 have their bottom edges flush with the bottom of
+    // the XY pad, mirroring each other on the left and right.
+    const int lowerRowY = multiPad.getBottom() - scaleBoxHeight;
+    scaleBox3.setBounds (gap, lowerRowY, scaleBoxWidth, scaleBoxHeight);
+    scaleBox4.setBounds (rightColumnX, lowerRowY, scaleBoxWidth, scaleBoxHeight);
     
-    multiPadSize = designHeight / 1.55f;
+    // A single status-bar row below everything, with the smooth controls on
+    // the left and the export buttons on the right.
+    const int statusBarY = multiPad.getBottom() + gap;
+    smoothToggle.setBounds (gap, statusBarY, 80, statusBarHeight);
+    smoothAmtSlider.setBounds (smoothToggle.getRight() + gap, statusBarY, 215, statusBarHeight);
     
-    float xOrigin = (designWidth - multiPadSize) / 2.0f;
-    float yOrigin = 100.0f;
-    multiPad.setBounds(xOrigin, yOrigin, multiPadSize, multiPadSize);
-  
+    exportKbmButton.setBounds (designWidth - gap - 100, statusBarY, 100, statusBarHeight);
+    exportSclButton.setBounds (exportKbmButton.getX() - gap - 100, statusBarY, 100, statusBarHeight);
 }
 
 void ScaleSpaceAudioProcessorEditor::scaleOpenButtonClicked(const uint32_t tuningNumber, const uint32_t tunType, const char* chooserText, const char* fileExt)
