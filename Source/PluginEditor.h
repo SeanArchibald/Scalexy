@@ -45,12 +45,18 @@ protected:
 private:
     static constexpr int designWidth = 1315;
     static constexpr int designHeight = 700;
+    static constexpr int minWidth = designWidth / 2;
+    static constexpr int minHeight = designHeight / 2;
+    static constexpr int maxWidth = designWidth * 3;
+    static constexpr int maxHeight = designHeight * 3;
     
     void layoutContent();
     
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     ScaleSpaceAudioProcessor& audioProcessor;
+    
+    juce::PropertiesFile settingsFile;
     
     // All UI lives inside this fixed-size component. Its transform is updated
     // on resize so that the whole interface scales while keeping its aspect ratio.

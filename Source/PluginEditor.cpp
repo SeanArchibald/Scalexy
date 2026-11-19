@@ -10,12 +10,32 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+static juce::PropertiesFile::Options createSettingsOptions()
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (designWidth, designHeight);
+    juce::PropertiesFile::Options options;
+    options.applicationName = "Scale-Space";
+    options.folderName = "Scale-Space";
+    options.filenameSuffix = ".settings";
+    options.osxLibrarySubFolder = "Application Support";
+    options.storageFormat = juce::PropertiesFile::storeAsXML;
+    
+    return options;
+}
+
+ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioProcessor& p)
+    : AudioProcessorEditor (&p), audioProcessor (p), settingsFile (createSettingsOptions())
+{
+    int restoredWidth = designWidth;
+    int restoredHeight = designHeight;
+    
+    restoredWidth  = settingsFile.getIntValue ("editorWidth", designWidth);
+    restoredHeight = settingsFile.getIntValue ("editorHeight", designHeight);
+    
+    restoredWidth  = juce::jlimit (minWidth,  maxWidth,  restoredWidth);
+    restoredHeight = juce::jlimit (minHeight, maxHeight, restoredHeight);
+    
+    // Restore the window size the user last chose (or use the design size).
+    setSize (restoredWidth, restoredHeight);
     
     // The whole UI is placed inside contentComponent, which is always laid out
     // at the design size and then scaled to fit the editor window.
@@ -157,7 +177,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     // Allow the host and the user to resize the editor. The bottom-right corner
     // resizer is added by JUCE, and the fixed aspect ratio keeps the UI proportional.
-    setResizeLimits (designWidth / 2, designHeight / 2, designWidth * 3, designHeight * 3);
+    setResizeLimits (minWidth, minHeight, maxWidth, maxHeight);
     if (auto* constrainer = getConstrainer())
         constrainer->setFixedAspectRatio ((double) designWidth / (double) designHeight);
     setResizable (true, true);
@@ -193,6 +213,10 @@ void ScaleSpaceAudioProcessorEditor::resized()
                                 designWidth, designHeight);
     
     layoutContent();
+    
+    // PropertiesFile saves itself automatically shortly after a change.
+    settingsFile.setValue ("editorWidth",  getWidth());
+    settingsFile.setValue ("editorHeight", getHeight());
 }
 
 void ScaleSpaceAudioProcessorEditor::layoutContent()
