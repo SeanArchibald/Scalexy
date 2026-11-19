@@ -462,6 +462,30 @@ void ScaleSpaceAudioProcessor::setNameStateForTuning(const uint32_t tuningNumber
 	setStringState(getNameIndexFromTuningAndFileType(tuningNumber, tunType), nameString);
 }
 
+// Returns the name to show in the UI for a loaded tuning file. SCL files carry
+// a description/name line, which the tuning library parses for us. KBM files
+// have no embedded name, so their file name is used without the extension.
+juce::String ScaleSpaceAudioProcessor::getDisplayNameForTuning(const juce::String & tunData, const juce::String & fileName, const uint32_t tunType)
+{
+    if (tunType == SCL)
+    {
+        try
+        {
+            auto s = Tunings::parseSCLData(tunData.toStdString());
+            auto name = juce::String(s.description).trim();
+            
+            if (name.isNotEmpty())
+                return name;
+        }
+        catch (const std::exception&)
+        {
+            // Fall through to the file name if the data can't be parsed here.
+        }
+    }
+    
+    return juce::File(fileName).getFileNameWithoutExtension();
+}
+
 // This function is to check the tuning is valid (before attempting to apply it). This check takes the tuning number, scl or kbm tuning data, and tuning type.
 bool ScaleSpaceAudioProcessor::editedTuningValid(const uint32_t tuningNumber, const juce::String & tunData, const uint32_t tunType)
 {
@@ -669,7 +693,7 @@ bool ScaleSpaceAudioProcessor::applyDroppedFile(const uint32_t tuningNumber, con
         if (applyNewTuning(tuningNumber, fileText, SCL))
         {
             // Update Scale Name stringState
-            setNameStateForTuning(tuningNumber, file.getFileName(), SCL);
+            setNameStateForTuning(tuningNumber, getDisplayNameForTuning(fileText, file.getFileName(), SCL), SCL);
             success = true;
         }
     }
@@ -678,7 +702,7 @@ bool ScaleSpaceAudioProcessor::applyDroppedFile(const uint32_t tuningNumber, con
         // Should be true if the new scale was applied successfully
         if (applyNewTuning(tuningNumber, fileText, KBM))
         {
-            setNameStateForTuning(tuningNumber, file.getFileName(), KBM);
+            setNameStateForTuning(tuningNumber, getDisplayNameForTuning(fileText, file.getFileName(), KBM), KBM);
             success = true;
         }
     }

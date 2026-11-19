@@ -107,6 +107,7 @@ public:
     Tunings::Tuning& getTestTuning();
     const char* getStateKey(const uint32_t index) noexcept;
     void setNameStateForTuning(const uint32_t tuningNumber, const juce::String & nameString, const uint32_t tunType);
+    juce::String getDisplayNameForTuning(const juce::String & tunData, const juce::String & fileName, const uint32_t tunType);
     bool editedTuningValid(const uint32_t tuningNumber, const juce::String & tunData, const uint32_t tunType);
     bool applyNewTuning(const uint32_t tuningNumber, const juce::String & tunData, const uint32_t tunType, const bool setFileState = true);
     bool applySclKbmPair(const uint32_t tuningNumber, const Tunings::Scale &s, const Tunings::KeyboardMapping &k);

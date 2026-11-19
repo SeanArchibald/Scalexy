@@ -238,7 +238,7 @@ void ScaleSpaceAudioProcessorEditor::scaleOpenButtonClicked(const uint32_t tunin
 					if (applyNewTuningFromEditor(tuningNumber, fileText, tunType))
 					{
 						// Update Scale Name stringState
-						audioProcessor.setNameStateForTuning(tuningNumber, file.getFileName(), tunType);
+						audioProcessor.setNameStateForTuning(tuningNumber, audioProcessor.getDisplayNameForTuning(fileText, file.getFileName(), tunType), tunType);
 						audioProcessor.setStringState( kStateLastOpenedLoadPath, file.getParentDirectory().getFullPathName() );
 					}
 				}
