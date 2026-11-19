@@ -8,6 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "Theme.h"
 
 //==============================================================================
 static juce::PropertiesFile::Options createSettingsOptions()
@@ -51,8 +52,9 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     contentComponent.addAndMakeVisible(&multiPad);
 
-    juce::Colour mainUITextColor = juce::Colours::black;
-    juce::Colour buttonOnColor = juce::Colour::fromRGB(0xF7, 0xC4, 0x6C);
+    const auto mainUITextColor = ScaleSpaceColours::foreground;
+    const auto controlFillColor = ScaleSpaceColours::controlFill;
+    const auto inactiveButtonColor = juce::Colour::fromRGB(0x1E, 0x1E, 0x1E);
     
     contentComponent.addAndMakeVisible (&pluginTitleLabel);
     pluginTitleLabel.setFont (juce::FontOptions(brunoAceSC).withHeight(42));
@@ -126,35 +128,35 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     // Export buttons
     contentComponent.addAndMakeVisible(&exportSclButton);
-    exportSclButton.setColour (juce::TextButton::buttonColourId, buttonOnColor);
+    exportSclButton.setColour (juce::TextButton::buttonColourId, controlFillColor);
     exportSclButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
     exportSclButton.setButtonText ("Export SCL");
     exportSclButton.onClick = [this] { exportButtonClicked(SCL, "Save SCL File for current tuning", "*.scl"); };
     
     contentComponent.addAndMakeVisible(&exportKbmButton);
-    exportKbmButton.setColour (juce::TextButton::buttonColourId, buttonOnColor);
+    exportKbmButton.setColour (juce::TextButton::buttonColourId, controlFillColor);
     exportKbmButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
     exportKbmButton.setButtonText ("Export KBM");
     exportKbmButton.onClick = [this] { exportButtonClicked(KBM, "Save KBM File for current tuning", "*.kbm"); };
     
     contentComponent.addAndMakeVisible(&smoothToggle);
-    smoothToggle.setColour (juce::ToggleButton::textColourId, juce::Colours::black);
-    smoothToggle.setColour (juce::ToggleButton::tickColourId, juce::Colours::black);
+    smoothToggle.setColour (juce::ToggleButton::textColourId, mainUITextColor);
+    smoothToggle.setColour (juce::ToggleButton::tickColourId, mainUITextColor);
     smoothToggle.setColour (juce::ToggleButton::tickDisabledColourId, juce::Colours::grey);
     smoothToggle.setButtonText ("Smooth");
     
     contentComponent.addAndMakeVisible (&smoothAmtSlider);
-    smoothAmtSlider.setColour(juce::Slider::thumbColourId , juce::Colour::fromRGB(0x00, 0x54, 0xC2));
-    smoothAmtSlider.setColour(juce::Slider::trackColourId, buttonOnColor);
-    smoothAmtSlider.setColour(juce::Slider::backgroundColourId, buttonOnColor);
+    smoothAmtSlider.setColour(juce::Slider::thumbColourId , ScaleSpaceColours::accent);
+    smoothAmtSlider.setColour(juce::Slider::trackColourId, controlFillColor);
+    smoothAmtSlider.setColour(juce::Slider::backgroundColourId, controlFillColor);
     smoothAmtSlider.setColour(juce::Slider::textBoxTextColourId, mainUITextColor);
     smoothAmtSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
     smoothAmtSlider.setColour(juce::Slider::textBoxOutlineColourId, mainUITextColor);
     smoothAmtSlider.setRange (1.0f, 10.0f);
     
     contentComponent.addAndMakeVisible (&dimensionModeButton);
-    dimensionModeButton.setColour (juce::TextButton::buttonColourId, juce::Colour::fromRGB(0xFA, 0xFA, 0xFA));
-    dimensionModeButton.setColour (juce::TextButton::buttonOnColourId, buttonOnColor);
+    dimensionModeButton.setColour (juce::TextButton::buttonColourId, inactiveButtonColor);
+    dimensionModeButton.setColour (juce::TextButton::buttonOnColourId, controlFillColor);
     dimensionModeButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
     dimensionModeButton.setColour (juce::TextButton::textColourOnId, mainUITextColor);
     dimensionModeButton.setToggleable(true);
@@ -194,7 +196,7 @@ ScaleSpaceAudioProcessorEditor::~ScaleSpaceAudioProcessorEditor()
 //==============================================================================
 void ScaleSpaceAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.setColour(juce::Colour::fromRGB(0xFA, 0xFA, 0xFA));
+    g.setColour(ScaleSpaceColours::background);
     g.fillAll();
 }
 

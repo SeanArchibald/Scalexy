@@ -1,4 +1,5 @@
 #include "MultiDimensionalPad.h"
+#include "Theme.h"
 
 MultiDimensionalPad::MultiDimensionalPad()
 {
@@ -110,12 +111,12 @@ void MultiDimensionalPad::paint(Graphics& g)
     if (threeDimensionMode)
     {
         // Draw z slider track
-        g.setColour(juce::Colours::black);
+        g.setColour(ScaleSpaceColours::foreground);
         g.drawLine(zTrack);
         
         // Draw z slider thumb    
         zThumbPos = zTrack.getPointAlongLine( (zSlider.getValue() - zSlider.getMinimum() ) / ( zSlider.getMaximum() - zSlider.getMinimum() ) * zTrack.getLength() );
-        g.setColour(juce::Colour::fromRGB(0x00, 0x54, 0xC2));
+        g.setColour(ScaleSpaceColours::accent);
         g.fillEllipse(zThumbPos.x - zThumbRadius, zThumbPos.y - zThumbRadius, zThumbRadius * 2, zThumbRadius * 2);
         
         // Draw (some of) 3d grid
@@ -128,7 +129,7 @@ void MultiDimensionalPad::paint(Graphics& g)
     }
     
     // Fill XY Pad area
-    g.setColour(juce::Colour::fromRGB(0xF7, 0xC4, 0x6C));
+    g.setColour(ScaleSpaceColours::controlFill);
     g.fillRoundedRectangle(xyPad, 10);
     
     // Draw XY pad grid
@@ -136,24 +137,24 @@ void MultiDimensionalPad::paint(Graphics& g)
     {
         if (i == 4)
         {
-            g.setColour(juce::Colour::fromRGBA(0x46, 0x66, 0xE6, 0x88));
+            g.setColour(ScaleSpaceColours::accent.withAlpha(0.53f));
         }
         else
         {
-            g.setColour(juce::Colour::fromRGBA(0x46, 0x66, 0xE6, 0x2A));
+            g.setColour(ScaleSpaceColours::accent.withAlpha(0.16f));
         }
 
         g.drawLine(xyPad.getX() + thumbRadius, xyPad.getY() + thumbRadius + i * ( (xyPad.getHeight() - (thumbRadius * 2) ) / 8), xyPad.getRight() - thumbRadius, xyPad.getY() + thumbRadius + i * ( (xyPad.getHeight() - (thumbRadius * 2) ) / 8), 2);
         g.drawLine(xyPad.getX() + thumbRadius + i * ( (xyPad.getWidth() - (thumbRadius * 2) ) / 8), xyPad.getY() + thumbRadius, xyPad.getX() + thumbRadius + i * ( (xyPad.getWidth() - (thumbRadius * 2) ) / 8), xyPad.getBottom() - thumbRadius, 2);
     }
     // Draw XY Pad
-    g.setColour(juce::Colour::fromRGB(0x46, 0x66, 0xE6));
+    g.setColour(ScaleSpaceColours::accent);
     g.drawRoundedRectangle(xyPad, 10, 2);
 
     // Draw XY pad thumb
     thumbPos = juce::Point<float>(  juce::jmap<float>(xSlider.getValue(), xSlider.getMinimum(), xSlider.getMaximum(), xyPad.getX() + thumbRadius, xyPad.getRight() - thumbRadius),
                                     juce::jmap<float>(ySlider.getValue(), ySlider.getMaximum(), ySlider.getMinimum(), xyPad.getY() + thumbRadius, xyPad.getBottom() - thumbRadius) );
-    g.setColour(juce::Colour::fromRGB(0x00, 0x54, 0xC2));
+    g.setColour(ScaleSpaceColours::accent);
     g.fillEllipse(thumbPos.x - thumbRadius, thumbPos.y - thumbRadius, thumbRadius * 2, thumbRadius * 2);
     
     if (threeDimensionMode)

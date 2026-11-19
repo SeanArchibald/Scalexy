@@ -1,4 +1,5 @@
 #include "ScaleBox.h"
+#include "Theme.h"
 
 ScaleBox::ScaleBox()
 {
@@ -8,22 +9,22 @@ ScaleBox::ScaleBox()
     addAndMakeVisible(scaleLabel);
     addAndMakeVisible(sclNameLabel);
     addAndMakeVisible(kbmNameLabel);
-    scaleLabel.setColour (juce::Label::textColourId, juce::Colours::black);
+    scaleLabel.setColour (juce::Label::textColourId, ScaleSpaceColours::foreground);
     scaleLabel.setMinimumHorizontalScale(1.0f);
-    openSclButton.setColour (juce::TextButton::buttonColourId, juce::Colour::fromRGB(0xF7, 0xC4, 0x6C));
-    openSclButton.setColour (juce::TextButton::textColourOffId, juce::Colours::black);
+    openSclButton.setColour (juce::TextButton::buttonColourId, ScaleSpaceColours::controlFill);
+    openSclButton.setColour (juce::TextButton::textColourOffId, ScaleSpaceColours::foreground);
     openSclButton.setButtonText ("Open SCL File");
-    openKbmButton.setColour (juce::TextButton::buttonColourId, juce::Colour::fromRGB(0xF7, 0xC4, 0x6C));
-    openKbmButton.setColour (juce::TextButton::textColourOffId, juce::Colours::black);
+    openKbmButton.setColour (juce::TextButton::buttonColourId, ScaleSpaceColours::controlFill);
+    openKbmButton.setColour (juce::TextButton::textColourOffId, ScaleSpaceColours::foreground);
     openKbmButton.setButtonText ("Open KBM File");
-    openEditorButton.setColour (juce::TextButton::buttonColourId, juce::Colour::fromRGB(0xF7, 0xC4, 0x6C));
-    openEditorButton.setColour (juce::TextButton::textColourOffId, juce::Colours::black);
+    openEditorButton.setColour (juce::TextButton::buttonColourId, ScaleSpaceColours::controlFill);
+    openEditorButton.setColour (juce::TextButton::textColourOffId, ScaleSpaceColours::foreground);
     openEditorButton.setButtonText ("Edit");
     sclNameLabel.setFont (juce::FontOptions().withHeight(16));
-    sclNameLabel.setColour (juce::Label::textColourId, juce::Colours::black);
+    sclNameLabel.setColour (juce::Label::textColourId, ScaleSpaceColours::foreground);
     sclNameLabel.setMinimumHorizontalScale(1.0f);
     kbmNameLabel.setFont (juce::FontOptions().withHeight(16));
-    kbmNameLabel.setColour (juce::Label::textColourId, juce::Colours::black);
+    kbmNameLabel.setColour (juce::Label::textColourId, ScaleSpaceColours::foreground);
     kbmNameLabel.setMinimumHorizontalScale(1.0f);
 }
 
@@ -33,6 +34,7 @@ ScaleBox::~ScaleBox()
 
 void ScaleBox::paint(Graphics& g)
 {
+    g.setColour(ScaleSpaceColours::accent);
     g.drawRect(getLocalBounds());
 }
 
