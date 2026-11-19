@@ -153,6 +153,9 @@ private:
     double targetFrequenciesInHz[128];
     
     bool previousSmooth;
+    bool registeredAsMaster;
+    
+    void updateMasterRegistration();
     
     std::bitset<128> currentKeysOn;
         

@@ -30,12 +30,9 @@ ScaleSpaceAudioProcessor::ScaleSpaceAudioProcessor()
     tuning4 = Tunings::Tuning();
     testTuning = Tunings::Tuning();
     
-    // Register MTS master
-    if (MTS_CanRegisterMaster())
-    {
-        MTS_RegisterMaster();
-        MTS_SetScaleName("Tuning set by Scale-Space");
-    }
+    // Register MTS master (retried while running in case the master is lost)
+    registeredAsMaster = false;
+    updateMasterRegistration();
     
     // Fill the frequency arrays with default frequencies from testTuning
     for (int i = 0; i < 128; i++)
@@ -74,7 +71,23 @@ ScaleSpaceAudioProcessor::ScaleSpaceAudioProcessor()
 
 ScaleSpaceAudioProcessor::~ScaleSpaceAudioProcessor()
 {
-    MTS_DeregisterMaster();
+    // Only deregister if this instance actually registered as the master.
+    // Otherwise closing a non-master instance would clear another instance's master state.
+    if (registeredAsMaster)
+        MTS_DeregisterMaster();
+}
+
+void ScaleSpaceAudioProcessor::updateMasterRegistration()
+{
+    // CanRegisterMaster() returns true if no master is currently registered.
+    // If our registration was cleared (for example by a host restarting a plugin
+    // instance), this lets us register again.
+    if (MTS_CanRegisterMaster())
+    {
+        MTS_RegisterMaster();
+        MTS_SetScaleName("Tuning set by Scale-Space");
+        registeredAsMaster = true;
+    }
 }
 
 //==============================================================================
@@ -142,8 +155,7 @@ void ScaleSpaceAudioProcessor::changeProgramName (int index, const juce::String&
 //==============================================================================
 void ScaleSpaceAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    updateMasterRegistration();
 }
 
 void ScaleSpaceAudioProcessor::releaseResources()
@@ -181,6 +193,9 @@ bool ScaleSpaceAudioProcessor::isBusesLayoutSupported (const BusesLayout& layout
 void ScaleSpaceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
+    
+    updateMasterRegistration();
+    
     //auto totalNumInputChannels  = getTotalNumInputChannels();
     //auto totalNumOutputChannels = getTotalNumOutputChannels();
 
@@ -271,6 +286,7 @@ bool ScaleSpaceAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* ScaleSpaceAudioProcessor::createEditor()
 {
+    updateMasterRegistration();
     return new ScaleSpaceAudioProcessorEditor (*this);
 }
 
