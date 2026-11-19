@@ -16,8 +16,8 @@
 static juce::PropertiesFile::Options createSettingsOptions()
 {
     juce::PropertiesFile::Options options;
-    options.applicationName = "Scale-Space";
-    options.folderName = "Scale-Space";
+    options.applicationName = "Scalexy";
+    options.folderName = "Scalexy";
     options.filenameSuffix = ".settings";
     options.osxLibrarySubFolder = "Application Support";
     options.storageFormat = juce::PropertiesFile::storeAsXML;
@@ -222,12 +222,17 @@ void ScaleSpaceAudioProcessorEditor::scaleOpenButtonClicked(const uint32_t tunin
 	if (tunType >= FILETYPE_COUNT)
 		return;
 	
+	const juce::String dirSettingKey = (tunType == SCL) ? "sclDir" : "kbmDir";
+	juce::String startDir = settingsFile.getValue (dirSettingKey);
+	if (startDir.isEmpty())
+		startDir = audioProcessor.getStringState (kStateLastOpenedLoadPath);
+	
 	chooser = std::make_unique<juce::FileChooser> (chooserText,
-		juce::File(audioProcessor.getStringState(kStateLastOpenedLoadPath)),
+		juce::File(startDir),
 		fileExt);
 	auto chooserFlags = juce::FileBrowserComponent::openMode
 						| juce::FileBrowserComponent::canSelectFiles;
-	chooser->launchAsync (chooserFlags, [this, tuningNumber, tunType, fileExt] (const juce::FileChooser& fc)
+	chooser->launchAsync (chooserFlags, [this, tuningNumber, tunType, fileExt, dirSettingKey] (const juce::FileChooser& fc)
 		{
 			auto file = fc.getResult();
 			// This is true if a file was chosen, false if the dialog was cancelled
@@ -245,6 +250,7 @@ void ScaleSpaceAudioProcessorEditor::scaleOpenButtonClicked(const uint32_t tunin
 						// Update Scale Name stringState
 						audioProcessor.setNameStateForTuning(tuningNumber, audioProcessor.getDisplayNameForTuning(fileText, file.getFileName(), tunType), tunType);
 						audioProcessor.setStringState( kStateLastOpenedLoadPath, file.getParentDirectory().getFullPathName() );
+						settingsFile.setValue (dirSettingKey, file.getParentDirectory().getFullPathName());
 					}
 				}
 				else
@@ -357,6 +363,10 @@ void ScaleSpaceAudioProcessorEditor::filesDropped (const juce::StringArray &file
             {
                 if (audioProcessor.applyDroppedFile(scaleToApply, i->toStdString()))
                 {
+                    const auto droppedFile = juce::File(*i);
+                    const auto dirSettingKey = droppedFile.getFileExtension() == ".scl" ? "sclDir" : "kbmDir";
+                    settingsFile.setValue (dirSettingKey, droppedFile.getParentDirectory().getFullPathName());
+                    
                     if (tuningEditor && audioProcessor.currentEditedTuning == scaleToApply)
                         tuningEditor->setupForTuning(scaleToApply);
                 }
