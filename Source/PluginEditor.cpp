@@ -199,14 +199,19 @@ void ScaleSpaceAudioProcessorEditor::layoutContent()
     scaleBox3.setBounds (gap, lowerRowY, scaleBoxWidth, scaleBoxHeight);
     scaleBox4.setBounds (rightColumnX, lowerRowY, scaleBoxWidth, scaleBoxHeight);
     
-    // A single status-bar row below everything, with the smooth controls on
-    // the left and the export buttons on the right.
+    // A single status-bar row below everything, with the export buttons on
+    // the left and the smooth controls centred beneath the XY pad.
     const int statusBarY = multiPad.getBottom() + gap;
-    smoothToggle.setBounds (gap, statusBarY, 80, statusBarHeight);
-    smoothAmtSlider.setBounds (smoothToggle.getRight() + gap, statusBarY, 215, statusBarHeight);
+    exportSclButton.setBounds (gap, statusBarY, 100, statusBarHeight);
+    exportKbmButton.setBounds (exportSclButton.getRight() + gap, statusBarY, 100, statusBarHeight);
     
-    exportKbmButton.setBounds (designWidth - gap - 100, statusBarY, 100, statusBarHeight);
-    exportSclButton.setBounds (exportKbmButton.getX() - gap - 100, statusBarY, 100, statusBarHeight);
+    constexpr int smoothToggleWidth = 80;
+    constexpr int smoothSliderWidth = 215;
+    constexpr int smoothGroupWidth = smoothToggleWidth + gap + smoothSliderWidth;
+    const int smoothGroupX = (designWidth - smoothGroupWidth) / 2;
+    
+    smoothToggle.setBounds (smoothGroupX, statusBarY, smoothToggleWidth, statusBarHeight);
+    smoothAmtSlider.setBounds (smoothToggle.getRight() + gap, statusBarY, smoothSliderWidth, statusBarHeight);
 }
 
 void ScaleSpaceAudioProcessorEditor::scaleOpenButtonClicked(const uint32_t tuningNumber, const uint32_t tunType, const char* chooserText, const char* fileExt)
