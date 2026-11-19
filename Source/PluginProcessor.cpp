@@ -64,22 +64,22 @@ ScaleSpaceAudioProcessor::ScaleSpaceAudioProcessor()
     setStringState(kStateFileKBM6, standardKBMMapping);
     setStringState(kStateFileKBM7, standardKBMMapping);
     setStringState(kStateFileKBM8, standardKBMMapping);
-    setStringState(kStateNameSCL1, "Standard SCL tuning");
-    setStringState(kStateNameSCL2, "Standard SCL tuning");
-    setStringState(kStateNameSCL3, "Standard SCL tuning");
-    setStringState(kStateNameSCL4, "Standard SCL tuning");
-    setStringState(kStateNameSCL5, "Standard SCL tuning");
-    setStringState(kStateNameSCL6, "Standard SCL tuning");
-    setStringState(kStateNameSCL7, "Standard SCL tuning");
-    setStringState(kStateNameSCL8, "Standard SCL tuning");
-    setStringState(kStateNameKBM1, "Standard KBM mapping");
-    setStringState(kStateNameKBM2, "Standard KBM mapping");
-    setStringState(kStateNameKBM3, "Standard KBM mapping");
-    setStringState(kStateNameKBM4, "Standard KBM mapping");
-    setStringState(kStateNameKBM5, "Standard KBM mapping");
-    setStringState(kStateNameKBM6, "Standard KBM mapping");
-    setStringState(kStateNameKBM7, "Standard KBM mapping");
-    setStringState(kStateNameKBM8, "Standard KBM mapping");
+    setStringState(kStateNameSCL1, "12ed2");
+    setStringState(kStateNameSCL2, "12ed2");
+    setStringState(kStateNameSCL3, "12ed2");
+    setStringState(kStateNameSCL4, "12ed2");
+    setStringState(kStateNameSCL5, "12ed2");
+    setStringState(kStateNameSCL6, "12ed2");
+    setStringState(kStateNameSCL7, "12ed2");
+    setStringState(kStateNameSCL8, "12ed2");
+    setStringState(kStateNameKBM1, "C262 linear");
+    setStringState(kStateNameKBM2, "C262 linear");
+    setStringState(kStateNameKBM3, "C262 linear");
+    setStringState(kStateNameKBM4, "C262 linear");
+    setStringState(kStateNameKBM5, "C262 linear");
+    setStringState(kStateNameKBM6, "C262 linear");
+    setStringState(kStateNameKBM7, "C262 linear");
+    setStringState(kStateNameKBM8, "C262 linear");
     
     setStringState(kStateLastOpenedLoadPath, "");
     setStringState(kStateFileSavePath, "");
@@ -754,8 +754,8 @@ void ScaleSpaceAudioProcessor::resetTuningStringStatesToStandard(const uint32_t 
 {
     setStringState( getFileIndexFromTuningAndFileType(tuningNumber, SCL), standardSCLTuning);
     setStringState( getFileIndexFromTuningAndFileType(tuningNumber, KBM), standardKBMMapping);
-    setStringState( getNameIndexFromTuningAndFileType(tuningNumber, SCL), "Standard SCL tuning");
-    setStringState( getNameIndexFromTuningAndFileType(tuningNumber, KBM), "Standard KBM mapping");
+    setStringState( getNameIndexFromTuningAndFileType(tuningNumber, SCL), "12ed2");
+    setStringState( getNameIndexFromTuningAndFileType(tuningNumber, KBM), "C262 linear");
 }
 
 const uint32_t ScaleSpaceAudioProcessor::getComplementaryKbmOrSclState(const uint32_t index) noexcept
