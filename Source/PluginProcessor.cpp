@@ -85,7 +85,7 @@ void ScaleSpaceAudioProcessor::updateMasterRegistration()
     if (MTS_CanRegisterMaster())
     {
         MTS_RegisterMaster();
-        MTS_SetScaleName("Tuning set by Scale-Space");
+        MTS_SetScaleName("Tuning set by Scalexy");
         registeredAsMaster = true;
     }
 }

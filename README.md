@@ -10,13 +10,13 @@ Each scale can be set with the Tuning Editor, or by loading a either a Scala sca
 
 The four corners of the XY slider represent each of the four scales. For example, moving the slider to the top left corner will set the current scale to Scale 1, and moving it to the bottom right corner will set the current scale to Scale 4. Different positions within the square will set the current scale to a different weighted average of the four scales.
 
-![Scale-Space](Scale-Space-1.png "Scale-Space showing four scale boxes and an XY pad")<br/>
+![Scale-Space](Scalexy-1.png "Scalexy showing four scale boxes and an XY pad")<br/>
 
 Clicking anywhere on the XY pad will immediately change the averaged scale. If 'Smooth' is set to on, the scale will glide continuously from one tuning to another. A higher setting on the Smooth slider means a longer glide time. Note that smoothing also causes a lag in the time taken for the tuning to change, even when the XY pad thumb is being dragged around manually.
 
 Pressing the 'Edit' button for a scale opens the Tuning Editor for that scale. Scale-Space's Tuning Editor is a slightly modified version of [Surge XT's](https://github.com/surge-synthesizer/surge) Tuning Editor. Note that while the Tuning Editor is open, the tuning is still being interpolated, so unless the thumb is at the relevant corner of the square for that tuning, any changes heard will be for the current mixed, interpolated tuning.
 
-![Tuning Editor](Scale-Space-3.png "Tuning Editor window")<br/>
+![Tuning Editor](Scalexy-2.png "Tuning Editor window")<br/>
 
 An .scl and .kbm file for the current interpolated scale, can be saved by by pressing the Export SCL and Export KBM buttons. To allow for any scale, the .scl file defines every MIDI note from 0 to 127 as a difference in cents from the reference note frequency. The .scl assumes that the reference note will be MIDI note 60, so the first listed pitch difference is assumed to be for MIDI note 61. The .kbm file sets the reference frequency at MIDI note 60, using the frequency of MIDI note 60 in the current scale. The .kbm file also sets key-for-key mapping.
 
