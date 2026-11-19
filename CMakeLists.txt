@@ -2,7 +2,11 @@ set(PROJECT_NAME Scale-Space)
 
 cmake_minimum_required(VERSION 3.22)
 
-project(SCALESPACE VERSION 0.0.5)
+# Single source of truth for the version, also read by the release workflow.
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" SCALESPACE_VERSION)
+string(STRIP "${SCALESPACE_VERSION}" SCALESPACE_VERSION)
+
+project(SCALESPACE VERSION ${SCALESPACE_VERSION})
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
 # find_package(JUCE CONFIG REQUIRED)        # If you've installed JUCE to your system
@@ -15,21 +19,21 @@ add_subdirectory(libs/fmt)
 set(FORMATS VST3)
 
 juce_add_plugin(${PROJECT_NAME}
-    VERSION 0.0.5                               # Set this if the plugin version is different to the project version
     # ICON_BIG ...                              # ICON_* arguments specify a path to an image file to use as an icon for the Standalone
     # ICON_SMALL ...
-    COMPANY_NAME "eventual-recluse"          	# Specify the name of the plugin's author
+    COMPANY_NAME "Scalexy"           	# Specify the name of the plugin's author
+    BUNDLE_ID "com.scalexy.scalexy"
     IS_SYNTH TRUE                      			# Is this a synth or an effect?
     NEEDS_MIDI_INPUT TRUE               		# Does the plugin need midi input?
     NEEDS_MIDI_OUTPUT FALSE              		# Does the plugin need midi output?
     IS_MIDI_EFFECT FALSE                	 	# Is this plugin a MIDI effect?
     EDITOR_WANTS_KEYBOARD_FOCUS FALSE    		# Does the editor need keyboard focus?
     COPY_PLUGIN_AFTER_BUILD TRUE         		# Install to the platform's default plugin directory after each build
-    PLUGIN_MANUFACTURER_CODE Yndr               # A four-character manufacturer id with at least one upper-case character
-    PLUGIN_CODE Scsp                            # A unique four-character plugin id with exactly one upper-case character
+    PLUGIN_MANUFACTURER_CODE Sclx               # A four-character manufacturer id with at least one upper-case character
+    PLUGIN_CODE Scxy                            # A unique four-character plugin id with exactly one upper-case character
                                                 # GarageBand 10.3 requires the first letter to be upper-case, and the remaining letters to be lower-case
     FORMATS "${FORMATS}"                  		# The formats to build. Other valid formats are: AAX Unity VST AU AUv3
-    PRODUCT_NAME "Scale-Space")        			# The name of the final executable, which can differ from the target name
+    PRODUCT_NAME "Scalexy")        			# The name of the final executable, which can differ from the target name
 
 juce_generate_juce_header(${PROJECT_NAME})
 
@@ -63,8 +67,7 @@ endif()
 
 juce_add_binary_data(ScaleSpacePluginData
     SOURCES
-        Source/Assets/Fonts/Bruno_Ace/BrunoAce-Regular.ttf
-        Source/Assets/Fonts/Bruno_Ace_SC/BrunoAceSC-Regular.ttf)
+        Source/Assets/Fonts/Bruno_Ace/BrunoAce-Regular.ttf)
 
 
 target_link_libraries(${PROJECT_NAME}

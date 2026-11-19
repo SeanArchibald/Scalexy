@@ -1,6 +1,8 @@
-# Scale-Space
+# Scalexy
 
-Scale-Space is an [MTS-ESP](https://github.com/ODDSound/MTS-ESP) master plugin, which allows the dynamic manipulation of the current scale by using a 2D slider to explore the 'scale space' between multiple scales.
+Scalexy is a fork of [Scale-Space](https://github.com/eventual-recluse/Scale-Space), an [MTS-ESP](https://github.com/ODDSound/MTS-ESP) master plugin, which allows the dynamic manipulation of the current scale by using an XY pad to explore the 'scale space' between 4 loaded scales.
+
+This fork makes the UI compact and darker, and removes the 3D functionality, resulting in a minimalist remix of Scale-Space.
 
 # Settings
 
@@ -27,6 +29,8 @@ Scala scale files (.scl) and / or keymapping files (.kbm) can be used to set the
 A collection of .scl and .kbm files can be found in the [Sevish Tuning Pack.](https://sevish.com/music-resources/#tuning-files)
 
 # Credits
+[Scale-Space by eventual-recluse](https://github.com/eventual-recluse/Scale-Space)
+
 [JUCE Framework.](https://github.com/juce-framework/JUCE) AGPLv3 license.
 
 [MTS-ESP.](https://github.com/ODDSound/MTS-ESP) 0BSD license.
@@ -38,7 +42,5 @@ The Tuning Editor, and supporting code, is adapted from [Surge XT.](https://gith
 [fmt.](https://github.com/fmtlib/fmt) [License.](https://github.com/fmtlib/fmt/blob/master/LICENSE)
 
 [Bruno Ace Font](https://fonts.google.com/specimen/Bruno+Ace) designed by Astigmatic. [Open Font License.](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
-
-[Bruno Ace SC Font](https://fonts.google.com/specimen/Bruno+Ace+SC) designed by Astigmatic. [Open Font License.](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
 
 2D pad initally based on the XY pad from [aether.](https://github.com/Coconut-audio/aether) GPL-3.0 license.
