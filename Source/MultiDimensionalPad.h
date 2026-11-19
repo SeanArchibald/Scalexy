@@ -11,8 +11,7 @@ struct MultiDimensionalPad : public juce::Component
     
     enum Thumb {
         XY_PAD_THUMB = 0,
-        Z_TRACK_THUMB = 1,
-        NO_THUMB_SELECTED = 2
+        NO_THUMB_SELECTED = 1
     };
     
     void mouseDown(const MouseEvent& event) override;
@@ -20,32 +19,15 @@ struct MultiDimensionalPad : public juce::Component
     void paint(Graphics& g) override;
     void resized() override;
     void sliderValueChanged(Slider* slider) override;
-    void threeDimensionModeActive(const bool status);
-    void setXYPadBoundsForTwoDWidget();
     
     juce::Point<float> thumbPos;
     float thumbRadius;
     uint32_t thumbDragged;
     
-    bool threeDimensionMode;
-    
     juce::Slider xSlider;
     juce::Slider ySlider;
-    juce::Slider zSlider;
-    
-    juce::Line<float> zTrack;
-    juce::Point<float> zThumbPos;
-    float zThumbRadius;
     
     juce::Rectangle<float> xyPad;
-    float xyPadSizeFor3D;
-    
-    juce::Rectangle<float> grid3dFace1;
-    juce::Rectangle<float> grid3dFace2;
-    juce::Line<float> grid3dEdge1;
-    juce::Line<float> grid3dEdge2;
-    juce::Line<float> grid3dEdge3;
-    juce::Line<float> grid3dEdge4;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiDimensionalPad)
 };

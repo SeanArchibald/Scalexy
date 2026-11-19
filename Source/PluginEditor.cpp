@@ -45,16 +45,13 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     // Slider attachments
     xAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.getApvts(), "x", multiPad.xSlider);
     yAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.getApvts(), "y", multiPad.ySlider);
-    zAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.getApvts(), "z", multiPad.zSlider);
     smoothAmtSliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(audioProcessor.getApvts(), "smoothAmount", smoothAmtSlider);
     smoothToggleAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (audioProcessor.getApvts(), "smooth", smoothToggle);
-    dimensionModeButtonAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (audioProcessor.getApvts(), "threeDimensional", dimensionModeButton);
     
     contentComponent.addAndMakeVisible(&multiPad);
 
     const auto mainUITextColor = ScaleSpaceColours::foreground;
     const auto controlFillColor = ScaleSpaceColours::controlFill;
-    const auto inactiveButtonColor = juce::Colour::fromRGB(0x1E, 0x1E, 0x1E);
     
     contentComponent.addAndMakeVisible (&pluginTitleLabel);
     pluginTitleLabel.setFont (juce::FontOptions(brunoAceSC).withHeight(42));
@@ -94,38 +91,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox4.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_4, KBM, "Open KBM File for Scale 4", "*.kbm"); };
     scaleBox4.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_4); };
     
-    // Scale Box 5
-    contentComponent.addAndMakeVisible (&scaleBox5);
-    scaleBox5.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
-    scaleBox5.scaleLabel.setText ("SCALE 5", juce::dontSendNotification);
-    scaleBox5.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_5, SCL, "Open SCL File for Scale 5", "*.scl"); };
-    scaleBox5.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_5, KBM, "Open KBM File for Scale 5", "*.kbm"); };
-    scaleBox5.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_5); };
-    
-    // Scale Box 6
-    contentComponent.addAndMakeVisible (&scaleBox6);
-    scaleBox6.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
-    scaleBox6.scaleLabel.setText ("SCALE 6", juce::dontSendNotification);
-    scaleBox6.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_6, SCL, "Open SCL File for Scale 6", "*.scl"); };
-    scaleBox6.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_6, KBM, "Open KBM File for Scale 6", "*.kbm"); };
-    scaleBox6.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_6); };
-    
-    // Scale Box 7
-    contentComponent.addAndMakeVisible (&scaleBox7);
-    scaleBox7.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
-    scaleBox7.scaleLabel.setText ("SCALE 7", juce::dontSendNotification);
-    scaleBox7.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_7, SCL, "Open SCL File for Scale 7", "*.scl"); };
-    scaleBox7.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_7, KBM, "Open KBM File for Scale 7", "*.kbm"); };
-    scaleBox7.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_7); };
-    
-    // Scale Box 8
-    contentComponent.addAndMakeVisible (&scaleBox8);
-    scaleBox8.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
-    scaleBox8.scaleLabel.setText ("SCALE 8", juce::dontSendNotification);
-    scaleBox8.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_8, SCL, "Open SCL File for Scale 8", "*.scl"); };
-    scaleBox8.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_8, KBM, "Open KBM File for Scale 8", "*.kbm"); };
-    scaleBox8.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_8); };
-    
     // Export buttons
     contentComponent.addAndMakeVisible(&exportSclButton);
     exportSclButton.setColour (juce::TextButton::buttonColourId, controlFillColor);
@@ -154,17 +119,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     smoothAmtSlider.setColour(juce::Slider::textBoxOutlineColourId, mainUITextColor);
     smoothAmtSlider.setRange (1.0f, 10.0f);
     
-    contentComponent.addAndMakeVisible (&dimensionModeButton);
-    dimensionModeButton.setColour (juce::TextButton::buttonColourId, inactiveButtonColor);
-    dimensionModeButton.setColour (juce::TextButton::buttonOnColourId, controlFillColor);
-    dimensionModeButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
-    dimensionModeButton.setColour (juce::TextButton::textColourOnId, mainUITextColor);
-    dimensionModeButton.setToggleable(true);
-    dimensionModeButton.setClickingTogglesState(true);
-    dimensionModeButton.setLookAndFeel(&dimensionModeButtonLookAndFeel);
-    dimensionModeButton.setButtonText ("3D");
-    dimensionModeButton.onClick = [this] { dimensionModeButtonClicked(); };
-    
     // Setting these colours doesn't work yet
     //tooltipWindow->setColour(juce::TooltipWindow::backgroundColourId, juce::Colours::white);
     //tooltipWindow->setColour(juce::TooltipWindow::textColourId, juce::Colours::black);
@@ -172,8 +126,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     // Set SCL & KBM Name label texts
     updateAllNameLabels();
-    
-    multiPad.threeDimensionModeActive(*audioProcessor.getApvts().getRawParameterValue("threeDimensional"));
     
     tuningEditor = std::make_unique<TuningEditor>(audioProcessor, TUNING_1);
     
@@ -225,58 +177,14 @@ void ScaleSpaceAudioProcessorEditor::layoutContent()
 {
     pluginTitleLabel.setBounds (20, 20, designWidth - 20, 30);
     
-    if (!*audioProcessor.getApvts().getRawParameterValue("threeDimensional"))
-    {
-        // 2D mode
-        uint32_t scaleBoxOriginX = 65;
-        uint32_t scaleBoxOriginY = 80;
-        uint32_t scaleBoxXOffset = 880;
-        uint32_t scaleBoxYOffset = 310;
-        scaleBox1.setBounds (scaleBoxOriginX, scaleBoxOriginY, 300, 170);
-        scaleBox2.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY, 300, 170);
-        scaleBox3.setBounds (scaleBoxOriginX, scaleBoxOriginY + scaleBoxYOffset, 300, 170);
-        scaleBox4.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY + scaleBoxYOffset, 300, 170);
-        
-        scaleBox5.setEnabled(false);
-        scaleBox5.setVisible(false);
-        scaleBox6.setEnabled(false);
-        scaleBox6.setVisible(false);
-        scaleBox7.setEnabled(false);
-        scaleBox7.setVisible(false);
-        scaleBox8.setEnabled(false);
-        scaleBox8.setVisible(false);
-    }
-    else
-    {
-        // 3D mode
-        scaleBox5.setEnabled(true);
-        scaleBox5.setVisible(true);
-        scaleBox6.setEnabled(true);
-        scaleBox6.setVisible(true);
-        scaleBox7.setEnabled(true);
-        scaleBox7.setVisible(true);
-        scaleBox8.setEnabled(true);
-        scaleBox8.setVisible(true);
-        
-        uint32_t scaleBoxOriginX = 10;
-        uint32_t scaleBoxOriginY = 210;
-        uint32_t scaleBoxXOffset = 210;
-        uint32_t scaleBoxYOffset = 180;
-        scaleBox1.setBounds (scaleBoxOriginX, scaleBoxOriginY, 200, 170);
-        scaleBox2.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY, 200, 170);
-        scaleBox3.setBounds (scaleBoxOriginX, scaleBoxOriginY + scaleBoxYOffset, 200, 170);
-        scaleBox4.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY + scaleBoxYOffset, 200, 170);
-        
-        scaleBoxOriginX = 890;
-        scaleBoxOriginY = 60;
-        scaleBoxXOffset = 210;
-        scaleBoxYOffset = 180;
-        scaleBox5.setBounds (scaleBoxOriginX, scaleBoxOriginY, 200, 170);
-        scaleBox6.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY, 200, 170);
-        scaleBox7.setBounds (scaleBoxOriginX, scaleBoxOriginY + scaleBoxYOffset, 200, 170);
-        scaleBox8.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY + scaleBoxYOffset, 200, 170);
-        
-    }
+    uint32_t scaleBoxOriginX = 65;
+    uint32_t scaleBoxOriginY = 80;
+    uint32_t scaleBoxXOffset = 880;
+    uint32_t scaleBoxYOffset = 310;
+    scaleBox1.setBounds (scaleBoxOriginX, scaleBoxOriginY, 300, 170);
+    scaleBox2.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY, 300, 170);
+    scaleBox3.setBounds (scaleBoxOriginX, scaleBoxOriginY + scaleBoxYOffset, 300, 170);
+    scaleBox4.setBounds (scaleBoxOriginX + scaleBoxXOffset, scaleBoxOriginY + scaleBoxYOffset, 300, 170);
     
     smoothToggle.setBounds (designWidth * 0.390f, 590, 80, 30);
     smoothAmtSlider.setBounds (designWidth * 0.442, 590, 215, 30);
@@ -285,8 +193,6 @@ void ScaleSpaceAudioProcessorEditor::layoutContent()
     exportKbmButton.setBounds (designWidth * 0.505f, 650, 100, 30);
     
     multiPadSize = designHeight / 1.55f;
-    
-    dimensionModeButton.setBounds (295, 15, 60, 45);
     
     float xOrigin = (designWidth - multiPadSize) / 2.0f;
     float yOrigin = 100.0f;
@@ -377,14 +283,6 @@ void ScaleSpaceAudioProcessorEditor::updateAllNameLabels()
     updateNameLabel (scaleBox3.kbmNameLabel, kStateNameKBM3);
     updateNameLabel (scaleBox4.sclNameLabel, kStateNameSCL4);
     updateNameLabel (scaleBox4.kbmNameLabel, kStateNameKBM4);
-    updateNameLabel (scaleBox5.sclNameLabel, kStateNameSCL5);
-    updateNameLabel (scaleBox5.kbmNameLabel, kStateNameKBM5);
-    updateNameLabel (scaleBox6.sclNameLabel, kStateNameSCL6);
-    updateNameLabel (scaleBox6.kbmNameLabel, kStateNameKBM6);
-    updateNameLabel (scaleBox7.sclNameLabel, kStateNameSCL7);
-    updateNameLabel (scaleBox7.kbmNameLabel, kStateNameKBM7);
-    updateNameLabel (scaleBox8.sclNameLabel, kStateNameSCL8);
-    updateNameLabel (scaleBox8.kbmNameLabel, kStateNameKBM8);
 }
 
 void ScaleSpaceAudioProcessorEditor::updateNameLabel(juce::Label &label, const uint32_t nameIndex)
@@ -440,14 +338,6 @@ void ScaleSpaceAudioProcessorEditor::filesDropped (const juce::StringArray &file
                 scaleToApply = TUNING_3;
             else if ( (x > scaleBox4.getX()) && (x < scaleBox4.getRight()) && (y > scaleBox4.getY()) && (y < scaleBox4.getBottom()) )
                 scaleToApply = TUNING_4;
-            else if ( *audioProcessor.getApvts().getRawParameterValue("threeDimensional") && (x > scaleBox5.getX()) && (x < scaleBox5.getRight()) && (y > scaleBox5.getY()) && (y < scaleBox5.getBottom()) )
-                scaleToApply = TUNING_5;
-            else if ( *audioProcessor.getApvts().getRawParameterValue("threeDimensional") && (x > scaleBox6.getX()) && (x < scaleBox6.getRight()) && (y > scaleBox6.getY()) && (y < scaleBox6.getBottom()) )
-                scaleToApply = TUNING_6;
-            else if ( *audioProcessor.getApvts().getRawParameterValue("threeDimensional") && (x > scaleBox7.getX()) && (x < scaleBox7.getRight()) && (y > scaleBox7.getY()) && (y < scaleBox7.getBottom()) )
-                scaleToApply = TUNING_7;
-            else if ( *audioProcessor.getApvts().getRawParameterValue("threeDimensional") && (x > scaleBox8.getX()) && (x < scaleBox8.getRight()) && (y > scaleBox8.getY()) && (y < scaleBox8.getBottom()) )
-                scaleToApply = TUNING_8;
                 
             if (scaleToApply != TUNING_COUNT)
             {
@@ -521,21 +411,6 @@ bool ScaleSpaceAudioProcessorEditor::applyNewTuningFromEditor(const uint32_t tun
         }
     }
     return success;
-}
-
-void ScaleSpaceAudioProcessorEditor::dimensionModeButtonClicked()
-{
-    if (*audioProcessor.getApvts().getRawParameterValue("threeDimensional"))
-    {
-        multiPad.threeDimensionModeActive(true);
-        resized();
-    }
-    else
-    {
-        multiPad.threeDimensionModeActive(false);
-        resized();
-    }
-    updateAllNameLabels();
 }
 
 void ScaleSpaceAudioProcessorEditor::openEditorButtonClicked(const uint32_t tuningNumber)

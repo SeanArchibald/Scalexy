@@ -18,39 +18,23 @@ enum States {
     kStateFileSCL2 = 1,
     kStateFileSCL3 = 2,
     kStateFileSCL4 = 3,
-    kStateFileSCL5 = 4,
-    kStateFileSCL6 = 5,
-    kStateFileSCL7 = 6,
-    kStateFileSCL8 = 7,
-    kStateFileKBM1 = 8,
-    kStateFileKBM2 = 9,
-    kStateFileKBM3 = 10,
-    kStateFileKBM4 = 11,
-    kStateFileKBM5 = 12,
-    kStateFileKBM6 = 13,
-    kStateFileKBM7 = 14,
-    kStateFileKBM8 = 15,
-    kStateNameSCL1 = 16,
-    kStateNameSCL2 = 17,
-    kStateNameSCL3 = 18,
-    kStateNameSCL4 = 19,
-    kStateNameSCL5 = 20,
-    kStateNameSCL6 = 21,
-    kStateNameSCL7 = 22,
-    kStateNameSCL8 = 23,
-    kStateNameKBM1 = 24,
-    kStateNameKBM2 = 25,
-    kStateNameKBM3 = 26,
-    kStateNameKBM4 = 27,
-    kStateNameKBM5 = 28,
-    kStateNameKBM6 = 29,
-    kStateNameKBM7 = 30,
-    kStateNameKBM8 = 31,
-    kStateLastOpenedLoadPath = 32,
-    kStateFileSavePath = 33,
-    kStateEditorMode = 34,
-    kStateEditorPolarMode = 35,
-    kStateCount    = 36
+    kStateFileKBM1 = 4,
+    kStateFileKBM2 = 5,
+    kStateFileKBM3 = 6,
+    kStateFileKBM4 = 7,
+    kStateNameSCL1 = 8,
+    kStateNameSCL2 = 9,
+    kStateNameSCL3 = 10,
+    kStateNameSCL4 = 11,
+    kStateNameKBM1 = 12,
+    kStateNameKBM2 = 13,
+    kStateNameKBM3 = 14,
+    kStateNameKBM4 = 15,
+    kStateLastOpenedLoadPath = 16,
+    kStateFileSavePath = 17,
+    kStateEditorMode = 18,
+    kStateEditorPolarMode = 19,
+    kStateCount    = 20
 };
 
 enum ScaleTunings {
@@ -58,11 +42,7 @@ enum ScaleTunings {
     TUNING_2 = 1,
     TUNING_3 = 2,
     TUNING_4 = 3,
-    TUNING_5 = 4,
-    TUNING_6 = 5,
-    TUNING_7 = 6,
-    TUNING_8 = 7,
-    TUNING_COUNT = 8
+    TUNING_COUNT = 4
 };
 
 enum FileType {
@@ -160,15 +140,11 @@ private:
     // This format is also convenient for saving and restoring the states.
     juce::XmlElement stringStates;
     
-    // Tunings for Scales 1 to 8
+    // Tunings for Scales 1 to 4
     Tunings::Tuning tuning1;
     Tunings::Tuning tuning2;
     Tunings::Tuning tuning3;
     Tunings::Tuning tuning4;
-    Tunings::Tuning tuning5;
-    Tunings::Tuning tuning6;
-    Tunings::Tuning tuning7;
-    Tunings::Tuning tuning8;
     // A separate tuning used for testing if SCL &KBM combinations are valid
     Tunings::Tuning testTuning;
     

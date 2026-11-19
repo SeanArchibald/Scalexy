@@ -13,7 +13,6 @@
 #include "TuningEditor.h"
 #include "ScaleBox.h"
 #include "MultiDimensionalPad.h"
-#include "ExtraLookAndFeel.h"
 //==============================================================================
 /**
 */
@@ -38,7 +37,6 @@ protected:
     void updateAllNameLabels();
     void updateNameLabel(juce::Label &label, const uint32_t nameIndex);
     bool applyNewTuningFromEditor(const uint32_t tuningNumber, const juce::String & tunData, const uint32_t tunType);
-    void dimensionModeButtonClicked();
     void openEditorButtonClicked(const uint32_t tuningNumber);
     void openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor);
 
@@ -68,19 +66,12 @@ private:
     MultiDimensionalPad multiPad;
     float multiPadSize;
     
-    DimensionModeButtonLookAndFeel dimensionModeButtonLookAndFeel;
-    juce::TextButton dimensionModeButton;
-    
     juce::Label pluginTitleLabel;
     
     ScaleBox scaleBox1;
     ScaleBox scaleBox2;
     ScaleBox scaleBox3;
     ScaleBox scaleBox4;
-    ScaleBox scaleBox5;
-    ScaleBox scaleBox6;
-    ScaleBox scaleBox7;
-    ScaleBox scaleBox8;
 
     juce::TextButton exportSclButton;
     juce::TextButton exportKbmButton;
@@ -90,10 +81,8 @@ private:
     
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> xAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> yAttachment;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> zAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> smoothAmtSliderAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> smoothToggleAttachment;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> dimensionModeButtonAttachment;
     
     juce::Typeface::Ptr brunoAce = juce::Typeface::createSystemTypefaceFor(BinaryData::BrunoAceRegular_ttf, BinaryData::BrunoAceRegular_ttfSize);
     juce::Typeface::Ptr brunoAceSC = juce::Typeface::createSystemTypefaceFor(BinaryData::BrunoAceSCRegular_ttf, BinaryData::BrunoAceSCRegular_ttfSize);

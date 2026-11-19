@@ -28,10 +28,6 @@ ScaleSpaceAudioProcessor::ScaleSpaceAudioProcessor()
     tuning2 = Tunings::Tuning();
     tuning3 = Tunings::Tuning();
     tuning4 = Tunings::Tuning();
-    tuning5 = Tunings::Tuning();
-    tuning6 = Tunings::Tuning();
-    tuning7 = Tunings::Tuning();
-    tuning8 = Tunings::Tuning();
     testTuning = Tunings::Tuning();
     
     // Register MTS master
@@ -52,34 +48,18 @@ ScaleSpaceAudioProcessor::ScaleSpaceAudioProcessor()
     setStringState(kStateFileSCL2, standardSCLTuning);
     setStringState(kStateFileSCL3, standardSCLTuning);
     setStringState(kStateFileSCL4, standardSCLTuning);
-    setStringState(kStateFileSCL5, standardSCLTuning);
-    setStringState(kStateFileSCL6, standardSCLTuning);
-    setStringState(kStateFileSCL7, standardSCLTuning);
-    setStringState(kStateFileSCL8, standardSCLTuning);
     setStringState(kStateFileKBM1, standardKBMMapping);
     setStringState(kStateFileKBM2, standardKBMMapping);
     setStringState(kStateFileKBM3, standardKBMMapping);
     setStringState(kStateFileKBM4, standardKBMMapping);
-    setStringState(kStateFileKBM5, standardKBMMapping);
-    setStringState(kStateFileKBM6, standardKBMMapping);
-    setStringState(kStateFileKBM7, standardKBMMapping);
-    setStringState(kStateFileKBM8, standardKBMMapping);
     setStringState(kStateNameSCL1, "12ed2");
     setStringState(kStateNameSCL2, "12ed2");
     setStringState(kStateNameSCL3, "12ed2");
     setStringState(kStateNameSCL4, "12ed2");
-    setStringState(kStateNameSCL5, "12ed2");
-    setStringState(kStateNameSCL6, "12ed2");
-    setStringState(kStateNameSCL7, "12ed2");
-    setStringState(kStateNameSCL8, "12ed2");
     setStringState(kStateNameKBM1, "C262 linear");
     setStringState(kStateNameKBM2, "C262 linear");
     setStringState(kStateNameKBM3, "C262 linear");
     setStringState(kStateNameKBM4, "C262 linear");
-    setStringState(kStateNameKBM5, "C262 linear");
-    setStringState(kStateNameKBM6, "C262 linear");
-    setStringState(kStateNameKBM7, "C262 linear");
-    setStringState(kStateNameKBM8, "C262 linear");
     
     setStringState(kStateLastOpenedLoadPath, "");
     setStringState(kStateFileSavePath, "");
@@ -211,45 +191,21 @@ void ScaleSpaceAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, j
     
     float x = *apvts.getRawParameterValue("x");
     float y = *apvts.getRawParameterValue("y");
-    float z = *apvts.getRawParameterValue("z");
-    
-    bool threeDMode = *apvts.getRawParameterValue("threeDimensional");
     
     bool smoothOn = *apvts.getRawParameterValue("smooth");
     double smoothFactor = *apvts.getRawParameterValue("smoothAmount") * 1000;
     int frames = buffer.getNumSamples();
     
-    if (!threeDMode)
+    // Calculated weighted average of the four scales, and set target frequencies
+    for (uint32_t i = 0; i < 128; i++)
     {
-        // 2D mode. Tunings 1 to 4 and axes x and y.
-        for (uint32_t i = 0; i < 128; i++)
-        {
-            targetFrequenciesInHz[i] =  (tuning1.frequencyForMidiNote(i) * (0.5f - (x / 2.0f)) * (0.5f + (y / 2.0f)))
-                                        + (tuning2.frequencyForMidiNote(i) * (0.5f + (x / 2.0f)) * (0.5f + (y / 2.0f)))
-                                        + (tuning3.frequencyForMidiNote(i) * (0.5f - (x / 2.0f)) * (0.5f - (y / 2.0f)))
-                                        + (tuning4.frequencyForMidiNote(i) * (0.5f + (x / 2.0f)) * (0.5f - (y / 2.0f)));
-            
-            if ( smoothOn && !previousSmooth )
-                frequenciesInHz[i] = targetFrequenciesInHz[i];
-        }
-    }
-    else
-    {
-        // 3D mode. Tunings 1 to 8 and axes x, y and z.
-        for (uint32_t i = 0; i < 128; i++)
-        {
-            targetFrequenciesInHz[i] =  (tuning1.frequencyForMidiNote(i) * (0.5f - (x / 2.0f)) * (0.5f + (y / 2.0f)) * (0.5f - (z / 2.0f)))
-                                        + (tuning2.frequencyForMidiNote(i) * (0.5f + (x / 2.0f)) * (0.5f + (y / 2.0f)) * (0.5f - (z / 2.0f)))
-                                        + (tuning3.frequencyForMidiNote(i) * (0.5f - (x / 2.0f)) * (0.5f - (y / 2.0f)) * (0.5f - (z / 2.0f)))
-                                        + (tuning4.frequencyForMidiNote(i) * (0.5f + (x / 2.0f)) * (0.5f - (y / 2.0f)) * (0.5f - (z/  2.0f)))
-                                        + (tuning5.frequencyForMidiNote(i) * (0.5f - (x / 2.0f)) * (0.5f + (y / 2.0f)) * (0.5f + (z / 2.0f)))
-                                        + (tuning6.frequencyForMidiNote(i) * (0.5f + (x / 2.0f)) * (0.5f + (y / 2.0f)) * (0.5f + (z / 2.0f)))
-                                        + (tuning7.frequencyForMidiNote(i) * (0.5f - (x / 2.0f)) * (0.5f - (y / 2.0f)) * (0.5f + (z / 2.0f)))
-                                        + (tuning8.frequencyForMidiNote(i) * (0.5f + (x / 2.0f)) * (0.5f - (y / 2.0f)) * (0.5f + (z / 2.0f)));
-            
-            if ( smoothOn && !previousSmooth )
-                frequenciesInHz[i] = targetFrequenciesInHz[i];
-        }
+        targetFrequenciesInHz[i] =  (tuning1.frequencyForMidiNote(i) * (0.5f - (x / 2.0f)) * (0.5f + (y / 2.0f)))
+                                    + (tuning2.frequencyForMidiNote(i) * (0.5f + (x / 2.0f)) * (0.5f + (y / 2.0f)))
+                                    + (tuning3.frequencyForMidiNote(i) * (0.5f - (x / 2.0f)) * (0.5f - (y / 2.0f)))
+                                    + (tuning4.frequencyForMidiNote(i) * (0.5f + (x / 2.0f)) * (0.5f - (y / 2.0f)));
+        
+        if ( smoothOn && !previousSmooth )
+            frequenciesInHz[i] = targetFrequenciesInHz[i];
     }
     
     
@@ -376,18 +332,10 @@ void ScaleSpaceAudioProcessor::setStateInformation (const void* data, int sizeIn
     applyNewTuning(TUNING_2, getStringState(kStateFileSCL2).toStdString(), SCL, false);
     applyNewTuning(TUNING_3, getStringState(kStateFileSCL3).toStdString(), SCL, false);
     applyNewTuning(TUNING_4, getStringState(kStateFileSCL4).toStdString(), SCL, false);
-    applyNewTuning(TUNING_5, getStringState(kStateFileSCL5).toStdString(), SCL, false);
-    applyNewTuning(TUNING_6, getStringState(kStateFileSCL6).toStdString(), SCL, false);
-    applyNewTuning(TUNING_7, getStringState(kStateFileSCL7).toStdString(), SCL, false);
-    applyNewTuning(TUNING_8, getStringState(kStateFileSCL8).toStdString(), SCL, false);
     applyNewTuning(TUNING_1, getStringState(kStateFileKBM1).toStdString(), KBM, false);
     applyNewTuning(TUNING_2, getStringState(kStateFileKBM2).toStdString(), KBM, false);
     applyNewTuning(TUNING_3, getStringState(kStateFileKBM3).toStdString(), KBM, false);
     applyNewTuning(TUNING_4, getStringState(kStateFileKBM4).toStdString(), KBM, false);
-    applyNewTuning(TUNING_5, getStringState(kStateFileKBM5).toStdString(), KBM, false);
-    applyNewTuning(TUNING_6, getStringState(kStateFileKBM6).toStdString(), KBM, false);
-    applyNewTuning(TUNING_7, getStringState(kStateFileKBM7).toStdString(), KBM, false);
-    applyNewTuning(TUNING_8, getStringState(kStateFileKBM8).toStdString(), KBM, false);
 }
 
 void ScaleSpaceAudioProcessor::setStringState(juce::Identifier id, const juce::String & newVal)
@@ -421,10 +369,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout ScaleSpaceAudioProcessor::ad
     
     paramLayout.add(std::make_unique<juce::AudioParameterFloat>("x", "X", -1.0f, 1.0f, -1.0f));
     paramLayout.add(std::make_unique<juce::AudioParameterFloat>("y", "Y", -1.0f, 1.0f, 1.0f));
-    paramLayout.add(std::make_unique<juce::AudioParameterFloat>("z", "Z", -1.0f, 1.0f, -1.0f));
     paramLayout.add(std::make_unique<juce::AudioParameterFloat>("smoothAmount", "Smooth Amt", 1.0f, 10.0f, 1.0f));
     paramLayout.add(std::make_unique<juce::AudioParameterBool>("smooth", "Smooth", false));
-    paramLayout.add(std::make_unique<juce::AudioParameterBool>("threeDimensional", "3D", false));
     
     return paramLayout;
 }
@@ -442,10 +388,6 @@ Tunings::Tuning& ScaleSpaceAudioProcessor::getTuning(const uint32_t tuningNumber
         case TUNING_2: return tuning2;
         case TUNING_3: return tuning3;
         case TUNING_4: return tuning4;
-        case TUNING_5: return tuning5;
-        case TUNING_6: return tuning6;
-        case TUNING_7: return tuning7;
-        case TUNING_8: return tuning8;
     }
     // return testTuning by default (shouldn't ever happen)
     return testTuning;
@@ -459,10 +401,6 @@ Tunings::Tuning ScaleSpaceAudioProcessor::getCopyOfTuning(const uint32_t tuningN
         case TUNING_2: return tuning2;
         case TUNING_3: return tuning3;
         case TUNING_4: return tuning4;
-        case TUNING_5: return tuning5;
-        case TUNING_6: return tuning6;
-        case TUNING_7: return tuning7;
-        case TUNING_8: return tuning8;
     }
     // return testTuning by default (shouldn't ever happen)
     return testTuning;
@@ -481,34 +419,18 @@ const char* ScaleSpaceAudioProcessor::getStateKey(const uint32_t index) noexcept
         case kStateFileSCL2: return "scl_file_2";
         case kStateFileSCL3: return "scl_file_3";
         case kStateFileSCL4: return "scl_file_4";
-        case kStateFileSCL5: return "scl_file_5";
-        case kStateFileSCL6: return "scl_file_6";
-        case kStateFileSCL7: return "scl_file_7";
-        case kStateFileSCL8: return "scl_file_8";
         case kStateFileKBM1: return "kbm_file_1";
         case kStateFileKBM2: return "kbm_file_2";
         case kStateFileKBM3: return "kbm_file_3";
         case kStateFileKBM4: return "kbm_file_4";
-        case kStateFileKBM5: return "kbm_file_5";
-        case kStateFileKBM6: return "kbm_file_6";
-        case kStateFileKBM7: return "kbm_file_7";
-        case kStateFileKBM8: return "kbm_file_8";
         case kStateNameSCL1: return "scl_name_1";
         case kStateNameSCL2: return "scl_name_2";
         case kStateNameSCL3: return "scl_name_3";
         case kStateNameSCL4: return "scl_name_4";
-        case kStateNameSCL5: return "scl_name_5";
-        case kStateNameSCL6: return "scl_name_6";
-        case kStateNameSCL7: return "scl_name_7";
-        case kStateNameSCL8: return "scl_name_8";
         case kStateNameKBM1: return "kbm_name_1";
         case kStateNameKBM2: return "kbm_name_2";
         case kStateNameKBM3: return "kbm_name_3";
         case kStateNameKBM4: return "kbm_name_4";
-        case kStateNameKBM5: return "kbm_name_5";
-        case kStateNameKBM6: return "kbm_name_6";
-        case kStateNameKBM7: return "kbm_name_7";
-        case kStateNameKBM8: return "kbm_name_8";
         case kStateFileSavePath: return "file_save_path";
         case kStateLastOpenedLoadPath: return "last_opened_load_path";
         case kStateEditorMode: return "editor_mode";
@@ -766,34 +688,18 @@ const uint32_t ScaleSpaceAudioProcessor::getComplementaryKbmOrSclState(const uin
         case kStateFileSCL2: return kStateFileKBM2;
         case kStateFileSCL3: return kStateFileKBM3;
         case kStateFileSCL4: return kStateFileKBM4;
-        case kStateFileSCL5: return kStateFileKBM5;
-        case kStateFileSCL6: return kStateFileKBM6;
-        case kStateFileSCL7: return kStateFileKBM7;
-        case kStateFileSCL8: return kStateFileKBM8;
         case kStateFileKBM1: return kStateFileSCL1;
         case kStateFileKBM2: return kStateFileSCL2;
         case kStateFileKBM3: return kStateFileSCL3;
         case kStateFileKBM4: return kStateFileSCL4;
-        case kStateFileKBM5: return kStateFileSCL5;
-        case kStateFileKBM6: return kStateFileSCL6;
-        case kStateFileKBM7: return kStateFileSCL7;
-        case kStateFileKBM8: return kStateFileSCL8;
         case kStateNameSCL1: return kStateNameKBM1;
         case kStateNameSCL2: return kStateNameKBM2;
         case kStateNameSCL3: return kStateNameKBM3;
         case kStateNameSCL4: return kStateNameKBM4;
-        case kStateNameSCL5: return kStateNameKBM5;
-        case kStateNameSCL6: return kStateNameKBM6;
-        case kStateNameSCL7: return kStateNameKBM7;
-        case kStateNameSCL8: return kStateNameKBM8;
         case kStateNameKBM1: return kStateNameSCL1;
         case kStateNameKBM2: return kStateNameSCL2;
         case kStateNameKBM3: return kStateNameSCL3;
         case kStateNameKBM4: return kStateNameSCL4;
-        case kStateNameKBM5: return kStateNameSCL5;
-        case kStateNameKBM6: return kStateNameSCL6;
-        case kStateNameKBM7: return kStateNameSCL7;
-        case kStateNameKBM8: return kStateNameSCL8;
     }
     
     return kStateCount;
@@ -811,14 +717,6 @@ const uint32_t ScaleSpaceAudioProcessor::getFileIndexFromTuningAndFileType(const
             return kStateFileSCL3;
         else if (tuningNumber == TUNING_4)
             return kStateFileSCL4;
-        else if (tuningNumber == TUNING_5)
-            return kStateFileSCL5;
-        else if (tuningNumber == TUNING_6)
-            return kStateFileSCL6;
-        else if (tuningNumber == TUNING_7)
-            return kStateFileSCL7;
-        else if (tuningNumber == TUNING_8)
-            return kStateFileSCL8;
     }
     else if (tunType == KBM)
     {
@@ -830,14 +728,6 @@ const uint32_t ScaleSpaceAudioProcessor::getFileIndexFromTuningAndFileType(const
             return kStateFileKBM3;
         else if (tuningNumber == TUNING_4)
             return kStateFileKBM4;
-        else if (tuningNumber == TUNING_5)
-            return kStateFileKBM5;
-        else if (tuningNumber == TUNING_6)
-            return kStateFileKBM6;
-        else if (tuningNumber == TUNING_7)
-            return kStateFileKBM7;
-        else if (tuningNumber == TUNING_8)
-            return kStateFileKBM8;
     }
     // default
     return kStateCount;
@@ -855,14 +745,6 @@ const uint32_t ScaleSpaceAudioProcessor::getNameIndexFromTuningAndFileType(const
             return kStateNameSCL3;
         else if (tuningNumber == TUNING_4)
             return kStateNameSCL4;
-        else if (tuningNumber == TUNING_5)
-            return kStateNameSCL5;
-        else if (tuningNumber == TUNING_6)
-            return kStateNameSCL6;
-        else if (tuningNumber == TUNING_7)
-            return kStateNameSCL7;
-        else if (tuningNumber == TUNING_8)
-            return kStateNameSCL8;
     }
     else if (tunType == KBM)
     {
@@ -874,14 +756,6 @@ const uint32_t ScaleSpaceAudioProcessor::getNameIndexFromTuningAndFileType(const
             return kStateNameKBM3;
         else if (tuningNumber == TUNING_4)
             return kStateNameKBM4;
-        else if (tuningNumber == TUNING_5)
-            return kStateNameKBM5;
-        else if (tuningNumber == TUNING_6)
-            return kStateNameKBM6;
-        else if (tuningNumber == TUNING_7)
-            return kStateNameKBM7;
-        else if (tuningNumber == TUNING_8)
-            return kStateNameKBM8;
     }
     // default
     return kStateCount;
