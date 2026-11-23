@@ -12,7 +12,7 @@ jobs:
     outputs:
       value: ${{ steps.read.outputs.value }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Read version
         id: read
         run: echo "value=$(tr -d '[:space:]' < VERSION)" >> "$GITHUB_OUTPUT"
@@ -21,7 +21,7 @@ jobs:
     needs: version
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Prepare for JUCE
@@ -37,7 +37,7 @@ jobs:
           tar -czf "$GITHUB_WORKSPACE/Scalexy-v${{ needs.version.outputs.value }}-Linux-x64.tar.gz" \
             -C ./build/SCALESPACE_artefacts/Release/VST3 "Scalexy.vst3"
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: ${{ github.workspace }}/Scalexy-v${{ needs.version.outputs.value }}-Linux-x64.tar.gz
           name: linux
@@ -47,7 +47,7 @@ jobs:
     needs: version
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Run CMake
@@ -60,7 +60,7 @@ jobs:
           Compress-Archive -Path "build\SCALESPACE_artefacts\Release\VST3\Scalexy.vst3" `
             -DestinationPath "Scalexy-v${{ needs.version.outputs.value }}-Windows-x64.zip"
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: Scalexy-v${{ needs.version.outputs.value }}-Windows-x64.zip
           name: windows
@@ -70,7 +70,7 @@ jobs:
     needs: version
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Run CMake
@@ -86,7 +86,7 @@ jobs:
             "build/SCALESPACE_artefacts/Release/VST3/Scalexy.vst3" \
             "Scalexy-v${{ needs.version.outputs.value }}-macOS-universal.zip"
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           path: Scalexy-v${{ needs.version.outputs.value }}-macOS-universal.zip
           name: macos
@@ -97,12 +97,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: v${{ needs.version.outputs.value }}
           name: Scalexy v${{ needs.version.outputs.value }}
