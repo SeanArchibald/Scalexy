@@ -93,7 +93,7 @@ private:
     OutlinedTextButton exportSclButton { "Export SCL" };
     OutlinedTextButton exportKbmButton { "Export KBM" };
     
-    juce::ToggleButton smoothToggle;
+    juce::ToggleButton smoothToggle { "Smooth" };
     juce::Slider smoothAmtSlider;
     
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> xAttachment;

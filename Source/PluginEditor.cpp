@@ -141,7 +141,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     smoothToggle.setColour (juce::ToggleButton::textColourId, mainUITextColor);
     smoothToggle.setColour (juce::ToggleButton::tickColourId, mainUITextColor);
     smoothToggle.setColour (juce::ToggleButton::tickDisabledColourId, juce::Colours::grey);
-    smoothToggle.setButtonText ("Smooth");
     
     contentComponent.addAndMakeVisible (&smoothAmtSlider);
     smoothAmtSlider.setColour(juce::Slider::thumbColourId , ScaleSpaceColours::accent);
@@ -222,23 +221,44 @@ void ScaleSpaceAudioProcessorEditor::layoutContent()
     scaleBox3.setBounds (gap, bottomBoxY, scaleBoxWidth, scaleBoxHeight);
     scaleBox4.setBounds (rightColumnX, bottomBoxY, scaleBoxWidth, scaleBoxHeight);
     
-    // A single status-bar row below everything. The export buttons and smooth
-    // controls are grouped together and centred in the window.
+    // A single status-bar row below everything. The settings button stays in the
+    // bottom-left corner and the resize widget in the bottom-right. The export
+    // buttons and smooth controls keep their internal spacing, while the three
+    // gaps around and between the two groups are spread evenly.
     const int statusBarY = multiPad.getBottom() + gap;
     
     constexpr int exportButtonWidth = 100;
-    constexpr int smoothToggleWidth = 80;
     constexpr int smoothSliderWidth = 215;
-    constexpr int statusGroupWidth = exportButtonWidth * 2 + smoothToggleWidth
-                                     + smoothSliderWidth + gap * 3;
-    int statusX = (designWidth - statusGroupWidth) / 2;
+    
+    // Trim the Smooth label to its text so no dead space sits before the slider.
+    smoothToggle.setSize (smoothToggle.getWidth(), statusBarHeight);
+    smoothToggle.changeWidthToFitText();
+    const int smoothToggleWidth = smoothToggle.getWidth();
+    
+    // JUCE insets horizontal sliders by a thumb diameter on each side, so the
+    // visible thumb starts 5px inside the component. Compensate for that inset
+    // to keep a normal-looking gap between the label and the slider.
+    constexpr int sliderThumbInset = 5;
+    constexpr int toggleToSliderGap = gap - sliderThumbInset;
+    
+    constexpr int exportGroupWidth = exportButtonWidth * 2 + gap;
+    const int smoothGroupWidth = smoothToggleWidth + toggleToSliderGap
+                                 + smoothSliderWidth;
+    const int statusControlsWidth = exportGroupWidth + smoothGroupWidth;
+    
+    // JUCE sizes its bottom-right resize widget at 18px square.
+    constexpr int resizerWidth = 18;
+    const int statusLeftEdge  = gap + statusBarHeight;
+    const int statusRightEdge = designWidth - resizerWidth;
+    const int statusSpacing   = (statusRightEdge - statusLeftEdge - statusControlsWidth) / 3;
+    int statusX = statusLeftEdge + statusSpacing;
     
     exportSclButton.setBounds (statusX, statusBarY, exportButtonWidth, statusBarHeight);
     statusX += exportButtonWidth + gap;
     exportKbmButton.setBounds (statusX, statusBarY, exportButtonWidth, statusBarHeight);
-    statusX += exportButtonWidth + gap;
+    statusX += exportButtonWidth + statusSpacing;
     smoothToggle.setBounds (statusX, statusBarY, smoothToggleWidth, statusBarHeight);
-    statusX += smoothToggleWidth + gap;
+    statusX += smoothToggleWidth + toggleToSliderGap;
     smoothAmtSlider.setBounds (statusX, statusBarY, smoothSliderWidth, statusBarHeight);
     
     settingsButton.setBounds (gap, statusBarY, statusBarHeight, statusBarHeight);
