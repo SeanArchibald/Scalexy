@@ -67,7 +67,10 @@ endif()
 
 juce_add_binary_data(ScaleSpacePluginData
     SOURCES
-        Source/Assets/Fonts/Bruno_Ace/BrunoAce-Regular.ttf)
+        Source/Assets/Icons/CasinoIcon.svg
+        Source/Assets/Icons/DeleteIcon.svg
+        Source/Assets/Icons/FileOpenIcon.svg
+        Source/Assets/Icons/TuneIcon.svg)
 
 
 target_link_libraries(${PROJECT_NAME}

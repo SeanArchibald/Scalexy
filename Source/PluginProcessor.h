@@ -114,6 +114,7 @@ public:
     bool retuneToScale(const uint32_t tuningNumber, const Tunings::Scale &s);
     bool applyDroppedFile(const uint32_t tuningNumber, const std::string & filePath);
     void resetTuningStringStatesToStandard(const uint32_t tuningNumber);
+    void resetTuningToStandard(const uint32_t tuningNumber);
     const uint32_t getComplementaryKbmOrSclState(const uint32_t index)  noexcept;
     const uint32_t getFileIndexFromTuningAndFileType(const uint32_t tuningNumber, const uint32_t tunType) noexcept;
     const uint32_t getNameIndexFromTuningAndFileType(const uint32_t tuningNumber, const uint32_t tunType) noexcept;

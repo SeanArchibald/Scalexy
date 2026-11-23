@@ -67,35 +67,39 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     // Scale Box 1
     contentComponent.addAndMakeVisible (&scaleBox1);
-    scaleBox1.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
-    scaleBox1.scaleLabel.setText ("SCALE 1", juce::dontSendNotification);
+    scaleBox1.setRightAlignLabels (true);
     scaleBox1.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_1, SCL, "Open SCL File for Scale 1", "*.scl"); };
     scaleBox1.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_1, KBM, "Open KBM File for Scale 1", "*.kbm"); };
+    scaleBox1.randomButton.onClick = [this] { randomiseSclButtonClicked(TUNING_1); };
     scaleBox1.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_1); };
+    scaleBox1.resetButton.onClick = [this] { resetButtonClicked(TUNING_1); };
 
     // Scale Box 2
     contentComponent.addAndMakeVisible (&scaleBox2);
-    scaleBox2.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
-    scaleBox2.scaleLabel.setText ("SCALE 2", juce::dontSendNotification);
     scaleBox2.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_2, SCL, "Open SCL File for Scale 2", "*.scl"); };
     scaleBox2.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_2, KBM, "Open KBM File for Scale 2", "*.kbm"); };
+    scaleBox2.randomButton.onClick = [this] { randomiseSclButtonClicked(TUNING_2); };
     scaleBox2.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_2); };
+    scaleBox2.resetButton.onClick = [this] { resetButtonClicked(TUNING_2); };
     
     // Scale Box 3
     contentComponent.addAndMakeVisible (&scaleBox3);
-    scaleBox3.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
-    scaleBox3.scaleLabel.setText ("SCALE 3", juce::dontSendNotification);
+    scaleBox3.setRightAlignLabels (true);
+    scaleBox3.setButtonsAtTop (true);
     scaleBox3.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_3, SCL, "Open SCL File for Scale 3", "*.scl"); };
     scaleBox3.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_3, KBM, "Open KBM File for Scale 3", "*.kbm"); };
+    scaleBox3.randomButton.onClick = [this] { randomiseSclButtonClicked(TUNING_3); };
     scaleBox3.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_3); };
+    scaleBox3.resetButton.onClick = [this] { resetButtonClicked(TUNING_3); };
     
     // Scale Box 4
     contentComponent.addAndMakeVisible (&scaleBox4);
-    scaleBox4.scaleLabel.setFont (juce::FontOptions(brunoAce).withHeight(22));
-    scaleBox4.scaleLabel.setText ("SCALE 4", juce::dontSendNotification);
+    scaleBox4.setButtonsAtTop (true);
     scaleBox4.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_4, SCL, "Open SCL File for Scale 4", "*.scl"); };
     scaleBox4.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_4, KBM, "Open KBM File for Scale 4", "*.kbm"); };
+    scaleBox4.randomButton.onClick = [this] { randomiseSclButtonClicked(TUNING_4); };
     scaleBox4.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_4); };
+    scaleBox4.resetButton.onClick = [this] { resetButtonClicked(TUNING_4); };
     
     // Export buttons
     contentComponent.addAndMakeVisible(&exportSclButton);
@@ -262,6 +266,41 @@ void ScaleSpaceAudioProcessorEditor::scaleOpenButtonClicked(const uint32_t tunin
 				repaint();
 			}
 		});
+}
+
+void ScaleSpaceAudioProcessorEditor::randomiseSclButtonClicked(const uint32_t tuningNumber)
+{
+    if (tuningNumber >= TUNING_COUNT)
+        return;
+
+    const juce::String dirSettingKey = "sclDir";
+
+    if (!settingsFile.containsKey (dirSettingKey))
+        return;
+
+    const juce::File sclDir (settingsFile.getValue (dirSettingKey));
+    if (!sclDir.isDirectory())
+        return;
+
+    const auto sclFiles = sclDir.findChildFiles (juce::File::findFiles, false, "*.scl");
+    if (sclFiles.isEmpty())
+        return;
+
+    const auto file = sclFiles[juce::Random::getSystemRandom().nextInt (sclFiles.size())];
+    const auto fileText = file.loadFileAsString();
+
+    if (applyNewTuningFromEditor (tuningNumber, fileText, SCL))
+    {
+        audioProcessor.setNameStateForTuning (
+            tuningNumber,
+            audioProcessor.getDisplayNameForTuning (fileText, file.getFileName(), SCL),
+            SCL);
+        audioProcessor.setStringState (kStateLastOpenedLoadPath,
+                                       file.getParentDirectory().getFullPathName());
+    }
+
+    updateAllNameLabels();
+    repaint();
 }
 
 void ScaleSpaceAudioProcessorEditor::exportButtonClicked(const uint32_t tunType, const char* chooserText, const char* fileExt)
@@ -454,6 +493,20 @@ void ScaleSpaceAudioProcessorEditor::openEditorButtonClicked(const uint32_t tuni
     {
 		AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon, "Tuning Editor window is already open", "The Tuning Editor window is already open for another scale. Please close the current tuning editor window and try again!");
 	}
+}
+
+void ScaleSpaceAudioProcessorEditor::resetButtonClicked(const uint32_t tuningNumber)
+{
+    if (tuningNumber >= TUNING_COUNT)
+        return;
+
+    audioProcessor.resetTuningToStandard(tuningNumber);
+
+    if ( (tuningEditor) && (editorWindow) && (audioProcessor.currentEditedTuning == tuningNumber) )
+        tuningEditor->setupForTuning(tuningNumber);
+
+    updateAllNameLabels();
+    repaint();
 }
 
 void ScaleSpaceAudioProcessorEditor::openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor)

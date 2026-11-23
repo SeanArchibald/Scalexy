@@ -6,7 +6,7 @@ This fork makes the UI compact and darker, and removes the 3D functionality, res
 
 # Settings
 
-Each scale can be set with the Tuning Editor, or by loading a either a Scala scale file (.scl), keymapping file (.kbm) file, or both. Click "Open SCL File" or "Open KBM File" to choose the file. Files can also be dragged & dropped on to the scale boxes, or on to the Tuning Editor.
+Each scale can be set with the Tuning Editor, or by loading a either a Scala scale file (.scl), keymapping file (.kbm) file, or both. Click the SCL or KBM button (marked with the File Open icon) to choose the file. The casino icon button loads a random .scl file from the most recently used SCL folder, leaving the KBM unchanged. Files can also be dragged & dropped on to the scale boxes, or on to the Tuning Editor.
 
 The four corners of the XY slider represent each of the four scales. For example, moving the slider to the top left corner will set the current scale to Scale 1, and moving it to the bottom right corner will set the current scale to Scale 4. Different positions within the square will set the current scale to a different weighted average of the four scales.
 
@@ -14,7 +14,7 @@ The four corners of the XY slider represent each of the four scales. For example
 
 Clicking anywhere on the XY pad will immediately change the averaged scale. If 'Smooth' is set to on, the scale will glide continuously from one tuning to another. A higher setting on the Smooth slider means a longer glide time. Note that smoothing also causes a lag in the time taken for the tuning to change, even when the XY pad thumb is being dragged around manually.
 
-Pressing the 'Edit' button for a scale opens the Tuning Editor for that scale. Scale-Space's Tuning Editor is a slightly modified version of [Surge XT's](https://github.com/surge-synthesizer/surge) Tuning Editor. Note that while the Tuning Editor is open, the tuning is still being interpolated, so unless the thumb is at the relevant corner of the square for that tuning, any changes heard will be for the current mixed, interpolated tuning.
+Pressing the Editor button (the tune icon) for a scale opens the Tuning Editor for that scale. Scale-Space's Tuning Editor is a slightly modified version of [Surge XT's](https://github.com/surge-synthesizer/surge) Tuning Editor. Note that while the Tuning Editor is open, the tuning is still being interpolated, so unless the thumb is at the relevant corner of the square for that tuning, any changes heard will be for the current mixed, interpolated tuning.
 
 ![Tuning Editor](Scalexy-2.png "Tuning Editor window")<br/>
 
@@ -41,6 +41,6 @@ The Tuning Editor, and supporting code, is adapted from [Surge XT.](https://gith
 
 [fmt.](https://github.com/fmtlib/fmt) [License.](https://github.com/fmtlib/fmt/blob/master/LICENSE)
 
-[Bruno Ace Font](https://fonts.google.com/specimen/Bruno+Ace) designed by Astigmatic. [Open Font License.](https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL)
+[Google Material Icons.](https://github.com/google/material-design-icons) Copyright Google LLC. [Apache License 2.0.](https://www.apache.org/licenses/LICENSE-2.0)
 
 2D pad initally based on the XY pad from [aether.](https://github.com/Coconut-audio/aether) GPL-3.0 license.

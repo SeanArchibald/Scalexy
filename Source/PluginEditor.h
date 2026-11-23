@@ -34,11 +34,13 @@ public:
         
 protected:
     void scaleOpenButtonClicked(const uint32_t tuningNumber, const uint32_t tunType, const char* chooserText, const char* fileExt);
+    void randomiseSclButtonClicked(const uint32_t tuningNumber);
     void exportButtonClicked(const uint32_t tunType, const char* chooserText, const char* fileExt);
     void updateAllNameLabels();
     void updateNameLabel(juce::Label &label, const uint32_t nameIndex);
     bool applyNewTuningFromEditor(const uint32_t tuningNumber, const juce::String & tunData, const uint32_t tunType);
     void openEditorButtonClicked(const uint32_t tuningNumber);
+    void resetButtonClicked(const uint32_t tuningNumber);
     void openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor);
 
 private:
@@ -88,8 +90,6 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> yAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> smoothAmtSliderAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> smoothToggleAttachment;
-    
-    juce::Typeface::Ptr brunoAce = juce::Typeface::createSystemTypefaceFor(BinaryData::BrunoAceRegular_ttf, BinaryData::BrunoAceRegular_ttfSize);
     
     std::unique_ptr<juce::FileChooser> chooser;
     

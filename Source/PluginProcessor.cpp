@@ -712,6 +712,16 @@ bool ScaleSpaceAudioProcessor::applyDroppedFile(const uint32_t tuningNumber, con
     return success;
 }
 
+void ScaleSpaceAudioProcessor::resetTuningToStandard(const uint32_t tuningNumber)
+{
+    if (tuningNumber >= TUNING_COUNT)
+        return;
+
+    getTuning(tuningNumber) = Tunings::Tuning().withSkippedNotesInterpolated();
+    resetTuningStringStatesToStandard(tuningNumber);
+    paintFlag = true;
+}
+
 void ScaleSpaceAudioProcessor::resetTuningStringStatesToStandard(const uint32_t tuningNumber)
 {
     setStringState( getFileIndexFromTuningAndFileType(tuningNumber, SCL), standardSCLTuning);
