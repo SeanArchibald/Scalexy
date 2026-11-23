@@ -122,6 +122,14 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     scaleBox4.openEditorButton.onClick = [this] { openEditorButtonClicked(TUNING_4); };
     scaleBox4.resetButton.onClick = [this] { resetButtonClicked(TUNING_4); };
     
+    // Settings button (bottom-left)
+    contentComponent.addAndMakeVisible(&settingsButton);
+    auto settingsIcon = juce::Drawable::createFromImageData (BinaryData::SettingsIcon_svg,
+                                                            BinaryData::SettingsIcon_svgSize);
+    settingsIcon->replaceColour (juce::Colours::black, ScaleSpaceColours::foreground);
+    settingsButton.setIcon (std::move (settingsIcon));
+    settingsButton.onClick = [this] { settingsButtonClicked(); };
+    
     // Export buttons
     contentComponent.addAndMakeVisible(&exportSclButton);
     exportSclButton.onClick = [this] { exportButtonClicked(SCL, "Save SCL File for current tuning", "*.scl"); };
@@ -155,7 +163,7 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     if (auto* constrainer = getConstrainer())
         constrainer->setFixedAspectRatio ((double) designWidth / (double) designHeight);
     setResizable (true, true);
-    
+
     initialUIUpdate = true;
     startTimerHz(10);
 }
@@ -232,6 +240,8 @@ void ScaleSpaceAudioProcessorEditor::layoutContent()
     smoothToggle.setBounds (statusX, statusBarY, smoothToggleWidth, statusBarHeight);
     statusX += smoothToggleWidth + gap;
     smoothAmtSlider.setBounds (statusX, statusBarY, smoothSliderWidth, statusBarHeight);
+    
+    settingsButton.setBounds (gap, statusBarY, statusBarHeight, statusBarHeight);
 }
 
 void ScaleSpaceAudioProcessorEditor::scaleOpenButtonClicked(const uint32_t tuningNumber, const uint32_t tunType, const char* chooserText, const char* fileExt)
@@ -518,6 +528,15 @@ void ScaleSpaceAudioProcessorEditor::resetButtonClicked(const uint32_t tuningNum
 
     updateAllNameLabels();
     repaint();
+}
+
+void ScaleSpaceAudioProcessorEditor::settingsButtonClicked()
+{
+    settingsFile.saveIfNeeded();
+
+    const auto settingsFileOnDisk = settingsFile.getFile();
+    if (settingsFileOnDisk.existsAsFile())
+        settingsFileOnDisk.startAsProcess();
 }
 
 void ScaleSpaceAudioProcessorEditor::openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor)

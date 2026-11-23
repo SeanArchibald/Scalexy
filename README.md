@@ -2,19 +2,19 @@
 
 Scalexy is a fork of [Scale-Space](https://github.com/eventual-recluse/Scale-Space), an [MTS-ESP](https://github.com/ODDSound/MTS-ESP) master plugin, which allows the dynamic manipulation of the current scale by using an XY pad to explore the 'scale space' between 4 loaded scales.
 
-This fork makes the UI compact and darker, and removes the 3D functionality, resulting in a minimalist remix of Scale-Space.
+This fork makes the UI compact and darker, removes the 3D functionality, and adds quality of life features, resulting in a minimalist remix of Scale-Space.
 
 # Settings
 
-Each scale can be set with the Tuning Editor, or by loading a either a Scala scale file (.scl), keymapping file (.kbm) file, or both. Click the File Open icon for SCL or KBM to choose the file. The casino icon button loads a random .scl file from the most recently used SCL folder, leaving the KBM unchanged. Files can also be dragged & dropped on to the scale boxes, or on to the Tuning Editor.
+Each scale can be set with the Tuning Editor, or by loading a either a Scala scale file (.scl), keymapping file (.kbm) file, or both. Click "Load SCL" or "Load KBM" to choose the file. Files can also be dragged & dropped on to the scale boxes, or on to the Tuning Editor. Clicking "Random" loads a randomly selected .scl file from the most recently used SCL folder, leaving the KBM unchanged.
 
-The four corners of the XY slider represent each of the four scales. For example, moving the slider to the top left corner will set the current scale to Scale 1, and moving it to the bottom right corner will set the current scale to Scale 4. Different positions within the square will set the current scale to a different weighted average of the four scales.
+The four corners of the XY pad represent each of the four scales. Different positions within the XY pad will set the current scale to a different weighted average of the four scales.
 
 ![Scale-Space](Scalexy-1.png "Scalexy showing four scale boxes and an XY pad")<br/>
 
 Clicking anywhere on the XY pad will immediately change the averaged scale. If 'Smooth' is set to on, the scale will glide continuously from one tuning to another. A higher setting on the Smooth slider means a longer glide time. Note that smoothing also causes a lag in the time taken for the tuning to change, even when the XY pad thumb is being dragged around manually.
 
-Pressing the Editor button (the tune icon) for a scale opens the Tuning Editor for that scale. Scale-Space's Tuning Editor is a slightly modified version of [Surge XT's](https://github.com/surge-synthesizer/surge) Tuning Editor. Note that while the Tuning Editor is open, the tuning is still being interpolated, so unless the thumb is at the relevant corner of the square for that tuning, any changes heard will be for the current mixed, interpolated tuning.
+Clicking "Editor" opens the Tuning Editor for that scale. Scalexy inherits Scale-Space's Tuning Editor, which is a slightly modified version of [Surge XT's](https://github.com/surge-synthesizer/surge) Tuning Editor. Note that while the Tuning Editor is open, the tuning is still being interpolated, so unless the thumb is at the relevant corner of the square for that tuning, any changes heard will be for the current mixed, interpolated tuning.
 
 ![Tuning Editor](Scalexy-2.png "Tuning Editor window")<br/>
 

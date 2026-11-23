@@ -29,7 +29,7 @@ void IconButton::paintButton (juce::Graphics& g,
 
     constexpr float iconSize = 24.0f;
     constexpr float iconGap = 6.0f;
-    const auto font = juce::Font (juce::FontOptions().withHeight (20.0f));
+    const auto font = juce::Font (juce::FontOptions().withHeight (16.0f));
     const auto bounds = getLocalBounds().toFloat();
     const float startX = bounds.getX();
     const float centreY = bounds.getCentreY();

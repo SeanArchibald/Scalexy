@@ -70,6 +70,7 @@ juce_add_binary_data(ScaleSpacePluginData
         Source/Assets/Icons/CasinoIcon.svg
         Source/Assets/Icons/DeleteIcon.svg
         Source/Assets/Icons/FileOpenIcon.svg
+        Source/Assets/Icons/SettingsIcon.svg
         Source/Assets/Icons/TuneIcon.svg)
 
 

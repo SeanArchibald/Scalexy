@@ -48,10 +48,11 @@ protected:
     bool applyNewTuningFromEditor(const uint32_t tuningNumber, const juce::String & tunData, const uint32_t tunType);
     void openEditorButtonClicked(const uint32_t tuningNumber);
     void resetButtonClicked(const uint32_t tuningNumber);
+    void settingsButtonClicked();
     void openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor);
 
 private:
-    static constexpr int scaleBoxWidth   = 112;
+    static constexpr int scaleBoxWidth   = 98;
     static constexpr int scaleBoxHeight  = 168;
     static constexpr int padSize         = 451;
     static constexpr int statusBarHeight = 30;
@@ -86,6 +87,8 @@ private:
     ScaleBox scaleBox2;
     ScaleBox scaleBox3;
     ScaleBox scaleBox4;
+
+    IconButton settingsButton { "Settings" };
 
     OutlinedTextButton exportSclButton { "Export SCL" };
     OutlinedTextButton exportKbmButton { "Export KBM" };
