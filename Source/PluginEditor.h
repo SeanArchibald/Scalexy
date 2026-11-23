@@ -51,7 +51,7 @@ protected:
     void openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor);
 
 private:
-    static constexpr int scaleBoxWidth   = 150;
+    static constexpr int scaleBoxWidth   = 112;
     static constexpr int scaleBoxHeight  = 168;
     static constexpr int padSize         = 451;
     static constexpr int statusBarHeight = 30;

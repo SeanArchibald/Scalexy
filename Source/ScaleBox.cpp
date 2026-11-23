@@ -80,18 +80,17 @@ ScaleBox::~ScaleBox()
 
 void ScaleBox::resized()
 {
-    constexpr int margin = 8;
     constexpr int rowHeight = 28;
     constexpr int rowGap = 3;
     constexpr int rowCount = 5;
 
     const int stackHeight = rowCount * rowHeight + (rowCount - 1) * rowGap;
     int y = (getHeight() - stackHeight) / 2;
-    const int rowWidth = getWidth() - margin * 2;
+    const int rowWidth = getWidth();
 
     auto placeRow = [&] (IconButton& button)
     {
-        button.setBounds (margin, y, rowWidth, rowHeight);
+        button.setBounds (0, y, rowWidth, rowHeight);
         y += rowHeight + rowGap;
     };
 
