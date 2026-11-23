@@ -31,7 +31,7 @@ jobs:
       - name: Run CMake
         run: |
           cmake -S . -B ./build -DCMAKE_BUILD_TYPE=Release
-          cmake --build ./build --config Release --parallel 3
+          cmake --build ./build --config Release --parallel 3 --target SCALESPACE_VST3
       - name: Package
         run: |
           tar -czf "$GITHUB_WORKSPACE/Scalexy-v${{ needs.version.outputs.value }}-Linux-x64.tar.gz" \
@@ -53,7 +53,7 @@ jobs:
       - name: Run CMake
         run: |
           cmake -S . -B ./build -DCMAKE_BUILD_TYPE=Release
-          cmake --build ./build --config Release --parallel 3
+          cmake --build ./build --config Release --parallel 3 --target SCALESPACE_VST3
       - name: Package
         shell: pwsh
         run: |
@@ -76,7 +76,7 @@ jobs:
       - name: Run CMake
         run: |
           cmake -S . -B ./build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
-          cmake --build ./build --config Release --parallel 3
+          cmake --build ./build --config Release --parallel 3 --target SCALESPACE_VST3
       - name: Verify universal binary
         run: |
           lipo -info "build/SCALESPACE_artefacts/Release/VST3/Scalexy.vst3/Contents/MacOS/Scalexy"
