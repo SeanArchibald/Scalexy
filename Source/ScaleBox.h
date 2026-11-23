@@ -3,15 +3,17 @@
 
 #include <JuceHeader.h>
 
-struct IconTextButton : public juce::TextButton
+struct IconButton : public juce::Button
 {
-    explicit IconTextButton (const juce::String& text) : juce::TextButton (text) {}
+    IconButton (const juce::String& buttonName, const juce::String& buttonText = {})
+        : juce::Button (buttonName), text (buttonText) {}
 
     void setIcon (std::unique_ptr<juce::Drawable> newIcon);
     void paintButton (juce::Graphics&, bool shouldDrawButtonAsHighlighted,
                       bool shouldDrawButtonAsDown) override;
 
 private:
+    juce::String text;
     std::unique_ptr<juce::Drawable> icon;
 };
 
@@ -20,24 +22,15 @@ struct ScaleBox : public juce::Component
     ScaleBox();
     ~ScaleBox();
     
-    void paint(Graphics& g) override;
     void resized() override;
     
-    IconTextButton openSclButton { "SCL" };
-    IconTextButton openKbmButton { "KBM" };
-    juce::DrawableButton randomButton { "Random", juce::DrawableButton::ImageFitted };
-    juce::DrawableButton openEditorButton { "Editor", juce::DrawableButton::ImageFitted };
-    juce::DrawableButton resetButton { "Reset", juce::DrawableButton::ImageFitted };
-    juce::Label sclNameLabel;
-    juce::Label kbmNameLabel;
-
-    void setRightAlignLabels (bool shouldRightAlign);
-    void setButtonsAtTop (bool shouldBeAtTop);
+    IconButton openSclButton { "Load SCL", "Load SCL" };
+    IconButton openKbmButton { "Load KBM", "Load KBM" };
+    IconButton randomButton { "Random SCL", "Random" };
+    IconButton openEditorButton { "Editor", "Editor" };
+    IconButton resetButton { "Reset", "Reset" };
 
 private:
-    bool rightAlignLabels = false;
-    bool buttonsAtTop = false;
-    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScaleBox)
 };
 

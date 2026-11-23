@@ -25,6 +25,31 @@ static juce::PropertiesFile::Options createSettingsOptions()
     return options;
 }
 
+//==============================================================================
+void OutlinedTextButton::paintButton (juce::Graphics& g,
+                                      bool shouldDrawButtonAsHighlighted,
+                                      bool shouldDrawButtonAsDown)
+{
+    constexpr float cornerRadius = 5.0f;
+    const auto bounds = getLocalBounds().toFloat();
+    g.setColour (ScaleSpaceColours::background);
+    g.fillRoundedRectangle (bounds, cornerRadius);
+
+    if (shouldDrawButtonAsHighlighted || shouldDrawButtonAsDown)
+    {
+        g.setColour (ScaleSpaceColours::accent.withAlpha (shouldDrawButtonAsDown ? 0.18f : 0.08f));
+        g.fillRoundedRectangle (bounds, cornerRadius);
+    }
+
+    g.setColour (ScaleSpaceColours::buttonOutline);
+    g.drawRoundedRectangle (bounds.reduced (0.5f), cornerRadius, 1.0f);
+
+    const auto font = getLookAndFeel().getTextButtonFont (*this, getHeight());
+    g.setColour (ScaleSpaceColours::foreground);
+    g.setFont (font);
+    g.drawText (getButtonText(), getLocalBounds(), juce::Justification::centred, false);
+}
+
 ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p), settingsFile (createSettingsOptions())
 {
@@ -67,7 +92,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     // Scale Box 1
     contentComponent.addAndMakeVisible (&scaleBox1);
-    scaleBox1.setRightAlignLabels (true);
     scaleBox1.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_1, SCL, "Open SCL File for Scale 1", "*.scl"); };
     scaleBox1.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_1, KBM, "Open KBM File for Scale 1", "*.kbm"); };
     scaleBox1.randomButton.onClick = [this] { randomiseSclButtonClicked(TUNING_1); };
@@ -84,8 +108,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     // Scale Box 3
     contentComponent.addAndMakeVisible (&scaleBox3);
-    scaleBox3.setRightAlignLabels (true);
-    scaleBox3.setButtonsAtTop (true);
     scaleBox3.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_3, SCL, "Open SCL File for Scale 3", "*.scl"); };
     scaleBox3.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_3, KBM, "Open KBM File for Scale 3", "*.kbm"); };
     scaleBox3.randomButton.onClick = [this] { randomiseSclButtonClicked(TUNING_3); };
@@ -94,7 +116,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     // Scale Box 4
     contentComponent.addAndMakeVisible (&scaleBox4);
-    scaleBox4.setButtonsAtTop (true);
     scaleBox4.openSclButton.onClick = [this] { scaleOpenButtonClicked(TUNING_4, SCL, "Open SCL File for Scale 4", "*.scl"); };
     scaleBox4.openKbmButton.onClick = [this] { scaleOpenButtonClicked(TUNING_4, KBM, "Open KBM File for Scale 4", "*.kbm"); };
     scaleBox4.randomButton.onClick = [this] { randomiseSclButtonClicked(TUNING_4); };
@@ -103,15 +124,9 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     
     // Export buttons
     contentComponent.addAndMakeVisible(&exportSclButton);
-    exportSclButton.setColour (juce::TextButton::buttonColourId, controlFillColor);
-    exportSclButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
-    exportSclButton.setButtonText ("Export SCL");
     exportSclButton.onClick = [this] { exportButtonClicked(SCL, "Save SCL File for current tuning", "*.scl"); };
     
     contentComponent.addAndMakeVisible(&exportKbmButton);
-    exportKbmButton.setColour (juce::TextButton::buttonColourId, controlFillColor);
-    exportKbmButton.setColour (juce::TextButton::textColourOffId, mainUITextColor);
-    exportKbmButton.setButtonText ("Export KBM");
     exportKbmButton.onClick = [this] { exportButtonClicked(KBM, "Save KBM File for current tuning", "*.kbm"); };
     
     contentComponent.addAndMakeVisible(&smoothToggle);
@@ -128,11 +143,6 @@ ScaleSpaceAudioProcessorEditor::ScaleSpaceAudioProcessorEditor (ScaleSpaceAudioP
     smoothAmtSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
     smoothAmtSlider.setColour(juce::Slider::textBoxOutlineColourId, mainUITextColor);
     smoothAmtSlider.setRange (1.0f, 10.0f);
-    
-    // Setting these colours doesn't work yet
-    //tooltipWindow->setColour(juce::TooltipWindow::backgroundColourId, juce::Colours::white);
-    //tooltipWindow->setColour(juce::TooltipWindow::textColourId, juce::Colours::black);
-    //tooltipWindow->setColour(juce::TooltipWindow::outlineColourId, juce::Colours::black);
     
     // Set SCL & KBM Name label texts
     updateAllNameLabels();
@@ -189,33 +199,39 @@ void ScaleSpaceAudioProcessorEditor::layoutContent()
     constexpr int padX = gap + scaleBoxWidth + gap;
     constexpr int rightColumnX = padX + padSize + gap;
     
-    // Scale 1 sits in the top-left corner and Scale 2 mirrors it on the
-    // top-right, on the other side of the XY pad.
-    scaleBox1.setBounds (gap, gap, scaleBoxWidth, scaleBoxHeight);
-    scaleBox2.setBounds (rightColumnX, gap, scaleBoxWidth, scaleBoxHeight);
-    
-    // The XY pad sits between the top pair of scale boxes.
+    // The XY pad sits between the left and right columns of scale boxes.
     multiPad.setBounds (padX, gap, padSize, padSize);
     
-    // Scale 3 and Scale 4 have their bottom edges flush with the bottom of
-    // the XY pad, mirroring each other on the left and right.
-    const int lowerRowY = multiPad.getBottom() - scaleBoxHeight;
-    scaleBox3.setBounds (gap, lowerRowY, scaleBoxWidth, scaleBoxHeight);
-    scaleBox4.setBounds (rightColumnX, lowerRowY, scaleBoxWidth, scaleBoxHeight);
+    // Scale 1 sits in the top-left corner and Scale 2 mirrors it on the
+    // top-right. Each operation block is vertically centred on its adjacent
+    // XY pad quadrant.
+    const int topBoxY = gap + padSize / 4 - scaleBoxHeight / 2;
+    scaleBox1.setBounds (gap, topBoxY, scaleBoxWidth, scaleBoxHeight);
+    scaleBox2.setBounds (rightColumnX, topBoxY, scaleBoxWidth, scaleBoxHeight);
     
-    // A single status-bar row below everything, with the export buttons on
-    // the left and the smooth controls centred beneath the XY pad.
+    // Scale 3 and Scale 4 mirror each other on the bottom row.
+    const int bottomBoxY = gap + (padSize * 3) / 4 - scaleBoxHeight / 2;
+    scaleBox3.setBounds (gap, bottomBoxY, scaleBoxWidth, scaleBoxHeight);
+    scaleBox4.setBounds (rightColumnX, bottomBoxY, scaleBoxWidth, scaleBoxHeight);
+    
+    // A single status-bar row below everything. The export buttons and smooth
+    // controls are grouped together and centred in the window.
     const int statusBarY = multiPad.getBottom() + gap;
-    exportSclButton.setBounds (gap, statusBarY, 100, statusBarHeight);
-    exportKbmButton.setBounds (exportSclButton.getRight() + gap, statusBarY, 100, statusBarHeight);
     
+    constexpr int exportButtonWidth = 100;
     constexpr int smoothToggleWidth = 80;
     constexpr int smoothSliderWidth = 215;
-    constexpr int smoothGroupWidth = smoothToggleWidth + gap + smoothSliderWidth;
-    const int smoothGroupX = (designWidth - smoothGroupWidth) / 2;
+    constexpr int statusGroupWidth = exportButtonWidth * 2 + smoothToggleWidth
+                                     + smoothSliderWidth + gap * 3;
+    int statusX = (designWidth - statusGroupWidth) / 2;
     
-    smoothToggle.setBounds (smoothGroupX, statusBarY, smoothToggleWidth, statusBarHeight);
-    smoothAmtSlider.setBounds (smoothToggle.getRight() + gap, statusBarY, smoothSliderWidth, statusBarHeight);
+    exportSclButton.setBounds (statusX, statusBarY, exportButtonWidth, statusBarHeight);
+    statusX += exportButtonWidth + gap;
+    exportKbmButton.setBounds (statusX, statusBarY, exportButtonWidth, statusBarHeight);
+    statusX += exportButtonWidth + gap;
+    smoothToggle.setBounds (statusX, statusBarY, smoothToggleWidth, statusBarHeight);
+    statusX += smoothToggleWidth + gap;
+    smoothAmtSlider.setBounds (statusX, statusBarY, smoothSliderWidth, statusBarHeight);
 }
 
 void ScaleSpaceAudioProcessorEditor::scaleOpenButtonClicked(const uint32_t tuningNumber, const uint32_t tunType, const char* chooserText, const char* fileExt)
@@ -334,14 +350,14 @@ void ScaleSpaceAudioProcessorEditor::exportButtonClicked(const uint32_t tunType,
 
 void ScaleSpaceAudioProcessorEditor::updateAllNameLabels()
 {
-    updateNameLabel (scaleBox1.sclNameLabel, kStateNameSCL1);
-    updateNameLabel (scaleBox1.kbmNameLabel, kStateNameKBM1);
-    updateNameLabel (scaleBox2.sclNameLabel, kStateNameSCL2);
-    updateNameLabel (scaleBox2.kbmNameLabel, kStateNameKBM2);
-    updateNameLabel (scaleBox3.sclNameLabel, kStateNameSCL3);
-    updateNameLabel (scaleBox3.kbmNameLabel, kStateNameKBM3);
-    updateNameLabel (scaleBox4.sclNameLabel, kStateNameSCL4);
-    updateNameLabel (scaleBox4.kbmNameLabel, kStateNameKBM4);
+    updateNameLabel (multiPad.getScaleLabel (0), kStateNameSCL1);
+    updateNameLabel (multiPad.getMappingLabel (0), kStateNameKBM1);
+    updateNameLabel (multiPad.getScaleLabel (1), kStateNameSCL2);
+    updateNameLabel (multiPad.getMappingLabel (1), kStateNameKBM2);
+    updateNameLabel (multiPad.getScaleLabel (2), kStateNameSCL3);
+    updateNameLabel (multiPad.getMappingLabel (2), kStateNameKBM3);
+    updateNameLabel (multiPad.getScaleLabel (3), kStateNameSCL4);
+    updateNameLabel (multiPad.getMappingLabel (3), kStateNameKBM4);
 }
 
 void ScaleSpaceAudioProcessorEditor::updateNameLabel(juce::Label &label, const uint32_t nameIndex)
@@ -350,11 +366,6 @@ void ScaleSpaceAudioProcessorEditor::updateNameLabel(juce::Label &label, const u
         return;
     
     label.setText (audioProcessor.getStringState(nameIndex), juce::dontSendNotification);
-    // Rough approximation of whether to set a tooltip, i.e. try to estimate if the name fits in the scale box
-    if ((audioProcessor.getStringState(nameIndex).length() / 2.2f) > (label.getWidth() / label.getFont().getHeight()))
-        label.setTooltip (audioProcessor.getStringState(nameIndex));
-    else
-        label.setTooltip ("");
 }
 
 bool ScaleSpaceAudioProcessorEditor::isInterestedInFileDrag (const juce::StringArray &files)

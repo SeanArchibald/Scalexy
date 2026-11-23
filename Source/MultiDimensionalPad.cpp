@@ -21,6 +21,23 @@ MultiDimensionalPad::MultiDimensionalPad()
     
     thumbRadius = 10.0f;
     thumbDragged = NO_THUMB_SELECTED;
+    
+    for (size_t i = 0; i < scaleLabels.size(); ++i)
+    {
+        auto& scaleLabel = scaleLabels[i];
+        scaleLabel.setFont (juce::FontOptions().withHeight(16).withStyle ("Bold"));
+        scaleLabel.setColour (juce::Label::textColourId, ScaleSpaceColours::foreground);
+        scaleLabel.setMinimumHorizontalScale(1.0f);
+        scaleLabel.setInterceptsMouseClicks(false, false);
+        addAndMakeVisible(scaleLabel);
+        
+        auto& mappingLabel = mappingLabels[i];
+        mappingLabel.setFont (juce::FontOptions().withHeight(16));
+        mappingLabel.setColour (juce::Label::textColourId, ScaleSpaceColours::foreground);
+        mappingLabel.setMinimumHorizontalScale(1.0f);
+        mappingLabel.setInterceptsMouseClicks(false, false);
+        addAndMakeVisible(mappingLabel);
+    }
 }
 
 MultiDimensionalPad::~MultiDimensionalPad()
@@ -118,4 +135,35 @@ void MultiDimensionalPad::resized()
     // makes the layout gaps around the pad match their configured values.
     constexpr float strokeWidth = 2.0f;
     xyPad = getLocalBounds().toFloat().reduced(strokeWidth * 0.5f);
+    
+    // Scale and mapping labels sit in the four corners of the pad.
+    constexpr int labelHeight = 18;
+    constexpr int padInset = 12;
+    const int labelWidth = juce::jmax (1, (int) (xyPad.getWidth() * 0.5f) - padInset * 2);
+    const int leftX = juce::roundToInt (xyPad.getX()) + padInset;
+    const int rightX = juce::roundToInt (xyPad.getRight()) - padInset - labelWidth;
+    const int topY = juce::roundToInt (xyPad.getY()) + padInset;
+    const int bottomY = juce::roundToInt (xyPad.getBottom()) - padInset - labelHeight;
+    
+    for (size_t i = 0; i < scaleLabels.size(); ++i)
+    {
+        const bool isLeft = (i % 2 == 0);
+        const int x = isLeft ? leftX : rightX;
+        const auto justification = isLeft ? juce::Justification::centredLeft
+                                          : juce::Justification::centredRight;
+        
+        scaleLabels[i].setJustificationType (justification);
+        mappingLabels[i].setJustificationType (justification);
+        
+        if (i < 2)
+        {
+            scaleLabels[i].setBounds (x, topY, labelWidth, labelHeight);
+            mappingLabels[i].setBounds (x, topY + labelHeight, labelWidth, labelHeight);
+        }
+        else
+        {
+            mappingLabels[i].setBounds (x, bottomY, labelWidth, labelHeight);
+            scaleLabels[i].setBounds (x, bottomY - labelHeight, labelWidth, labelHeight);
+        }
+    }
 }

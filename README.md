@@ -6,7 +6,7 @@ This fork makes the UI compact and darker, and removes the 3D functionality, res
 
 # Settings
 
-Each scale can be set with the Tuning Editor, or by loading a either a Scala scale file (.scl), keymapping file (.kbm) file, or both. Click the SCL or KBM button (marked with the File Open icon) to choose the file. The casino icon button loads a random .scl file from the most recently used SCL folder, leaving the KBM unchanged. Files can also be dragged & dropped on to the scale boxes, or on to the Tuning Editor.
+Each scale can be set with the Tuning Editor, or by loading a either a Scala scale file (.scl), keymapping file (.kbm) file, or both. Click the File Open icon for SCL or KBM to choose the file. The casino icon button loads a random .scl file from the most recently used SCL folder, leaving the KBM unchanged. Files can also be dragged & dropped on to the scale boxes, or on to the Tuning Editor.
 
 The four corners of the XY slider represent each of the four scales. For example, moving the slider to the top left corner will set the current scale to Scale 1, and moving it to the bottom right corner will set the current scale to Scale 4. Different positions within the square will set the current scale to a different weighted average of the four scales.
 

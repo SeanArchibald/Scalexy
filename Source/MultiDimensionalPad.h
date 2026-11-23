@@ -2,6 +2,7 @@
 #define MULTIDIMENSIONALPAD_H
 
 #include <JuceHeader.h>
+#include <array>
 
 struct MultiDimensionalPad : public juce::Component
                             , public juce::Slider::Listener
@@ -20,6 +21,9 @@ struct MultiDimensionalPad : public juce::Component
     void resized() override;
     void sliderValueChanged(Slider* slider) override;
     
+    juce::Label& getScaleLabel (int index)   { return scaleLabels[(size_t) index]; }
+    juce::Label& getMappingLabel (int index) { return mappingLabels[(size_t) index]; }
+    
     juce::Point<float> thumbPos;
     float thumbRadius;
     uint32_t thumbDragged;
@@ -28,6 +32,10 @@ struct MultiDimensionalPad : public juce::Component
     juce::Slider ySlider;
     
     juce::Rectangle<float> xyPad;
+    
+private:
+    std::array<juce::Label, 4> scaleLabels;
+    std::array<juce::Label, 4> mappingLabels;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MultiDimensionalPad)
 };

@@ -15,6 +15,13 @@
 #include "MultiDimensionalPad.h"
 #include "Theme.h"
 //==============================================================================
+struct OutlinedTextButton : public juce::TextButton
+{
+    using juce::TextButton::TextButton;
+    void paintButton (juce::Graphics&, bool shouldDrawButtonAsHighlighted,
+                      bool shouldDrawButtonAsDown) override;
+};
+
 /**
 */
 class ScaleSpaceAudioProcessorEditor  : public juce::AudioProcessorEditor
@@ -44,8 +51,8 @@ protected:
     void openTuningEditor(const uint32_t tuningNumber, const float desktopScaleFactor);
 
 private:
-    static constexpr int scaleBoxWidth   = 300;
-    static constexpr int scaleBoxHeight  = 170;
+    static constexpr int scaleBoxWidth   = 150;
+    static constexpr int scaleBoxHeight  = 168;
     static constexpr int padSize         = 451;
     static constexpr int statusBarHeight = 30;
     
@@ -80,8 +87,8 @@ private:
     ScaleBox scaleBox3;
     ScaleBox scaleBox4;
 
-    juce::TextButton exportSclButton;
-    juce::TextButton exportKbmButton;
+    OutlinedTextButton exportSclButton { "Export SCL" };
+    OutlinedTextButton exportKbmButton { "Export KBM" };
     
     juce::ToggleButton smoothToggle;
     juce::Slider smoothAmtSlider;
@@ -92,8 +99,6 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> smoothToggleAttachment;
     
     std::unique_ptr<juce::FileChooser> chooser;
-    
-    juce::SharedResourcePointer<TooltipWindow> tooltipWindow;
     
     bool initialUIUpdate;
     
