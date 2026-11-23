@@ -16,7 +16,7 @@ add_subdirectory(libs/tuning-library)
 add_subdirectory(libs/fmt)
 
 # set plugin formats
-set(FORMATS VST3)
+set(FORMATS VST3 Standalone)
 
 juce_add_plugin(${PROJECT_NAME}
     # ICON_BIG ...                              # ICON_* arguments specify a path to an image file to use as an icon for the Standalone
